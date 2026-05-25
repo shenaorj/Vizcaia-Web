@@ -563,4 +563,31 @@ A **6 horas/día focal** = **~2 semanas calendario**.
 
 > Anotar aquí lo que se hace al ejecutar cada task. Formato: `T<N> <YYYY-MM-DD>: <qué se hizo, qué se aprendió, qué surgió>`.
 
-(vacío al inicio)
+### T1 — 2026-05-25 — ✅ Scaffolding Next.js + TS + Tailwind + Biome + pnpm
+
+**Qué se hizo**:
+- Scaffolded manualmente (no `create-next-app` — npm name no permite mayúsculas).
+- Versiones latest reales al momento del scaffolding:
+  - `next@16.2.6`, `react@19.2.6`, `typescript@6.0.3`, `tailwindcss@4.3.0`, `@biomejs/biome@2.4.15`, `pnpm@10.0.0`.
+- Plan decía Next 15 / Biome 1 / TS 5 → updated en práctica a versiones actuales.
+- Archivos creados: `package.json`, `tsconfig.json`, `next.config.mjs`, `biome.json`, `postcss.config.mjs`, `src/app/{layout,page}.tsx`, `src/app/globals.css`, `.gitignore`.
+
+**Qué se aprendió**:
+- npm `package.json#name` no permite mayúsculas → `vizcaia-web` (kebab) aunque el repo dir y branding sean `Vizcaia-Web`.
+- Tailwind 4 usa CSS-first config: `@import "tailwindcss"` y `@theme {}` en CSS. No `tailwind.config.ts` (será CSS en T2).
+- Biome 2 reorganizó nombres de reglas (`noConsoleLog` no existe, etc.). Simplifico a `recommended: true` y se añaden reglas custom si son necesarias.
+- Next 16 movió `experimental.typedRoutes` → `typedRoutes` (sin experimental).
+- `sharp` requiere `pnpm.onlyBuiltDependencies` en pnpm 10 para que funcione con `next/image`.
+
+**Qué surgió que no estaba en plan**:
+- **Puerto 3000 está ocupado en este Mac por otro proyecto local** (probablemente Quitebe dev). Usar `PORT=3010 pnpm dev` o agregar al `dev` script. Decisión menor: dejar como está, documentar en CLAUDE.md.
+- `tsconfig.json` lo modifica Next automáticamente al primer `build` (cambió `jsx: "preserve"` → `"react-jsx"` y agregó include path `.next/dev/types/**/*.ts`). Aceptado.
+
+**Acceptance criteria**: 5/5 ✓
+- `pnpm install` OK
+- `pnpm typecheck` OK
+- `pnpm lint` OK
+- `pnpm build` OK (genera `.next/standalone/`)
+- `pnpm dev` arranca en 282ms con Turbopack, HTTP 200, sirve hero placeholder.
+
+**Siguiente**: T2 — tokens del brand manual en Tailwind 4 (CSS `@theme`).

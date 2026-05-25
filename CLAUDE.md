@@ -71,16 +71,20 @@ Heredado de Vizcaia umbrella (ADR-007). Lo estable vive aquí (GitHub). Lo vivo 
 
 ```bash
 # Desarrollo local
-npm run dev          # puerto 3000
+pnpm dev                # default puerto 3000 (si ocupado en este Mac, usar PORT=3010 pnpm dev)
+PORT=3010 pnpm dev      # alternativa
 
 # Build prod
-npm run build && npm start
+pnpm build && pnpm start
 
 # Lint + types
-npm run lint && npm run typecheck
+pnpm lint && pnpm typecheck
+
+# Fix format automático
+pnpm lint:fix
 ```
 
-(Estos comandos van a existir cuando arranquemos `npm init` en Task 8 implementación.)
+> Nota: en este Mac el puerto 3000 lo usa otro proyecto local (Quitebe). Para este repo usar 3010+.
 
 ---
 

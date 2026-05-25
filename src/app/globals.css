@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+/* Base resets and global styles will live here.
+ * Tokens del brand manual se agregan en T2 con @theme {}.
+ */
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-feature-settings: 'ss03', 'cv05';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
