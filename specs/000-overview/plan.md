@@ -243,9 +243,84 @@ Todos los componentes usan `class-variance-authority` (cva) para variantes type-
 
 Self-hosted con `next/font/local`. Subset Latin (no Cyrillic, no CJK). Cada uno ~30-50 kB woff2.
 
-### Sin animaciones JS en v1
+### Animaciones — minimalistas excepto en el Hero
 
-Animaciones solo con CSS (`transition`, `transform`, `opacity`). Respeta `prefers-reduced-motion`. Sin framer-motion (50 kB bundle innecesarios).
+Resto del sitio: animaciones solo con CSS (`transition`, `transform`, `opacity`). Respeta `prefers-reduced-motion`. Sin framer-motion.
+
+**Excepción intencional**: el **Hero tiene un efecto interactivo Canvas 2D** (sección 5.bis). Es la única animación JS del sitio, contenida en su propio componente lazy-loaded, con fallback estático en mobile.
+
+### 5.bis Hero interactivo — Grid 2D distorsionada por el mouse
+
+**Objetivo visual**: fondo del hero es una grid de líneas finas (tipo blueprint técnico). Cuando el cursor pasa cerca, las líneas se distorsionan localmente — efecto "gravity well" o "spark ignition". Comunica el ADN "foundry for intelligence" en un solo gesto.
+
+**Decisión técnica (ver ADR-009)**: **Canvas 2D nativo, NO Three.js**. Mismo efecto visual con +5 kB en lugar de +250 kB.
+
+#### Componente
+
+`src/components/HeroCanvas.tsx` (client component, lazy-loaded):
+
+```typescript
+'use client'
+
+export function HeroCanvas() {
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const mouseRef = useRef({ x: 0, y: 0, active: false })
+
+  useEffect(() => {
+    const isTouch = window.matchMedia('(hover: none)').matches
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    if (isTouch || reducedMotion) {
+      drawStaticGrid(canvasRef.current!)   // render once, no anim loop
+      return
+    }
+
+    // animation loop con mouse-driven distortion
+    // grid 30×20 vertices, líneas bezier que pasan por vertices desplazados
+    // displacement = (mouse - vertex) * (strength / (distance + eps))
+    // ...
+  }, [])
+
+  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" aria-hidden="true" />
+}
+```
+
+#### Render strategy
+
+- **Above-the-fold contenido semántico** (`<h1>` tagline + `<p>` subtitle + CTA button) está en HTML normal, **delante** del canvas. Screen readers lo leen sin problema. SEO ve el texto.
+- Canvas con `aria-hidden="true"` (decorativo, no contenido).
+- Canvas dynamic-imported con `next/dynamic` y `loading: () => null` → no SSR, no bloquea First Contentful Paint.
+- Hero también funciona si el JS falla (fondo estático CSS con el grid del brand manual como fallback HTML).
+
+#### Algoritmo de distorsión
+
+- Grid de **30×20 vertices** (600 puntos). Suficiente densidad para verse bonito, suficiente sparcity para 60 fps en laptop modesta.
+- Cada frame:
+  1. Recalcular displacement de cada vertex: `disp = (mouse - vertex) * strength / (distance² + ε)` con `strength` ~50px y `ε` ~100.
+  2. Suavizar con damping (lerp) hacia la posición original cuando mouse está lejos.
+  3. Dibujar líneas conectando vertices con curvas Bezier (curva pasa por 4 vertices consecutivos).
+- Colores: líneas `rgba(255,255,255,0.04)` base, `rgba(0,227,122,0.20)` (signal-green) en vertices distorsionados.
+- Grosor variable: `lineWidth = 0.5 + (distortion / strength) * 1.5`.
+
+#### Mobile / touch / reduced-motion fallback
+
+- En `(hover: none)` → render estático del grid sin distorsión. Sin animation loop.
+- En `prefers-reduced-motion: reduce` → idem (sin animación).
+- Alternativa más ligera: en mobile reemplazar el `<canvas>` por un SVG estático del grid (~3 kB) generado en server-side. Decisión menor a tomar en implementación.
+
+#### Performance targets específicos del canvas
+
+- **No degrada Lighthouse < 92** (lazy load es crítico).
+- **60 fps en MacBook Air M1** durante interacción continua.
+- **40+ fps en mid-range Windows con GPU integrada**.
+- **0 CPU consumido** cuando el mouse no se mueve por 2+ segundos (pausar `requestAnimationFrame`).
+- **Pausar canvas** cuando el hero NO está visible (intersection observer): no animar cuando el usuario ha scrolleado abajo.
+
+#### Testing
+
+- Validación manual: Chrome DevTools Performance tab → verificar < 4ms scripting per frame.
+- Lighthouse antes/después del componente: caída máxima aceptable -3 puntos en Performance.
+- Manual en Safari mobile + iPhone para confirmar fallback estático.
 
 ---
 
