@@ -1,0 +1,566 @@
+# Tasks — Website Vizcaia v1
+
+> Descomposición ejecutable del `plan.md`. Cada task ≤ 1 día de trabajo. Tasks numeradas T1–T28, ordenadas por dependencia.
+>
+> **Estado**: borrador inicial (2026-05-25). Marca cada task como ✅ al terminar y agrega entrada en la bitácora al final.
+>
+> **Cómo ejecutar**: `/implement <feature-slug> T<N>` desde Claude Code. Para este proyecto usar `/implement website-v1 T<N>`.
+
+---
+
+## Fase 1 — Scaffolding base (T1–T5)
+
+### T1 — Inicializar proyecto Next.js + TS + pnpm + Biome
+
+**Estimación**: 2 h
+**Depende de**: nada
+**Archivos creados**:
+- `package.json`, `pnpm-lock.yaml`
+- `tsconfig.json` con `strict: true`, `noUncheckedIndexedAccess: true`
+- `next.config.mjs` con `output: 'standalone'`, i18n config base
+- `biome.json`
+- `src/app/layout.tsx`, `src/app/page.tsx` mínimo
+
+**Acceptance criteria**:
+- `pnpm install` corre sin warnings.
+- `pnpm dev` levanta en `http://localhost:3000` con página "Hello".
+- `pnpm lint` y `pnpm typecheck` pasan en limpio.
+- `pnpm build` produce `.next/standalone/`.
+
+---
+
+### T2 — Configurar Tailwind 4 + tokens del brand manual
+
+**Estimación**: 2 h
+**Depende de**: T1
+**Archivos creados/modificados**:
+- `tailwind.config.ts` con colores (ink, paper, signal, forge, moss, smoke, flare), fontFamily, letterSpacing del manual
+- `src/styles/globals.css` con `@tailwind base;` + custom layer + reset
+- Test page con cada color y peso de fuente
+
+**Acceptance criteria**:
+- Clases `bg-ink`, `text-signal`, `bg-paper-2`, `text-flare` funcionan.
+- Letter-spacing classes `tracking-tight-3`, `tracking-wide-16` funcionan.
+- Visualmente coincide con paleta del manual al ojo.
+
+---
+
+### T3 — Self-host fonts (Geist + Space Grotesk + Geist Mono + Instrument Serif)
+
+**Estimación**: 1.5 h
+**Depende de**: T2
+**Archivos creados/modificados**:
+- `public/fonts/` con .woff2 subset Latin de las 4 fuentes
+- `src/app/layout.tsx` configurando `next/font/local` con preload de las weights necesarias
+- Variables CSS `--font-geist`, `--font-space-grotesk`, etc. expuestas
+- `tailwind.config.ts` referenciando las variables CSS
+
+**Acceptance criteria**:
+- Fuentes cargan desde `/fonts/*.woff2` (verificar en Network tab).
+- Bundle de fonts < 200 kB total (subset Latin estricto).
+- Preload tag de las above-the-fold (Space Grotesk medium + Geist regular).
+- Fallback con `font-display: swap` activo.
+
+---
+
+### T4 — Setup i18n con segment `[locale]` + dictionaries
+
+**Estimación**: 3 h
+**Depende de**: T1
+**Archivos creados/modificados**:
+- `src/app/[locale]/layout.tsx`
+- `src/app/[locale]/page.tsx` (placeholder con hello en idioma)
+- `src/lib/i18n.ts` con `locales = ['en', 'es']`, `defaultLocale = 'en'`, helper `getDictionary(locale)`
+- `src/lib/dictionaries.ts` con dynamic imports
+- `src/messages/en.json` y `src/messages/es.json` (placeholders básicos)
+- `src/middleware.ts` redirige `/` → `/en`
+
+**Acceptance criteria**:
+- `localhost:3000/` redirige a `localhost:3000/en`.
+- `localhost:3000/en` muestra "Hello" en inglés.
+- `localhost:3000/es` muestra "Hola" en español.
+- `localhost:3000/fr` → 404 (no es locale soportado).
+- Tipos: `Locale` type union exportado para uso en componentes.
+
+---
+
+### T5 — Layout base + LanguageSwitcher + Header sticky
+
+**Estimación**: 3 h
+**Depende de**: T2, T3, T4
+**Archivos creados/modificados**:
+- `src/components/LanguageSwitcher.tsx` (client) — botón `EN | ES` con cookie persistence
+- `src/components/Header.tsx` (server) — logo + LanguageSwitcher sticky
+- `src/app/[locale]/layout.tsx` actualizado con Header + main + Footer placeholder
+- `src/lib/cookies.ts` helper para leer/setear cookie `vz_locale`
+
+**Acceptance criteria**:
+- Header sticky en top con backdrop blur sobre ink.
+- Click en `EN` o `ES` cambia idioma manteniendo path.
+- Cookie `vz_locale` persiste preferencia 1 año.
+- Mobile: Header colapsa correctamente sin overflow.
+
+---
+
+## Fase 2 — Componentes UI base (T6–T8)
+
+### T6 — Componentes UI shadcn adaptados con tokens Vizcaia
+
+**Estimación**: 4 h
+**Depende de**: T2
+**Archivos creados/modificados**:
+- `src/components/ui/button.tsx` (variants: primary, secondary, ghost; sizes: sm, md, lg)
+- `src/components/ui/input.tsx`
+- `src/components/ui/textarea.tsx`
+- `src/components/ui/select.tsx`
+- `src/components/ui/checkbox.tsx`
+- `src/components/ui/label.tsx`
+- Todos con `cva` para variants type-safe
+
+**Acceptance criteria**:
+- Button primary: bg-signal, text-ink, hover oscurece signal-2.
+- Inputs: border ink-3 sobre ink-2, focus ring signal con 2px outline-offset.
+- Todos navegables por teclado, focus visible claro.
+- Variantes coherentes con la voz austera del brand.
+
+---
+
+### T7 — MarkSpark component (logo SVG inline)
+
+**Estimación**: 1 h
+**Depende de**: T2
+**Archivos creados/modificados**:
+- `src/components/MarkSpark.tsx` con SVG inline del "The Spark" extraído del brand manual
+- Props: `size`, `color` (default `currentColor`)
+- `public/favicon.ico` generado a partir del mark
+- `src/app/icon.tsx` (Next.js dynamic favicon)
+
+**Acceptance criteria**:
+- `<MarkSpark size={32} />` renderiza el SVG con color `currentColor`.
+- Favicon visible en pestaña del navegador.
+- Apple touch icon generado para iOS.
+
+---
+
+### T8 — Footer component
+
+**Estimación**: 2 h
+**Depende de**: T5, T6, T7
+**Archivos creados/modificados**:
+- `src/components/sections/Footer.tsx`
+- Strings en `messages/en.json` y `messages/es.json` (sección `footer`)
+
+**Contenido del footer**:
+- MarkSpark + "Vizcaia" wordmark + tagline en mono "A foundry for intelligence"
+- 3 columnas: Links (Privacy), Contact (email), Social (LinkedIn cuando exista)
+- Bottom: "© 2026 Vizcaia Technologies. Headquartered in Casanare, Colombia. Serving global."
+
+**Acceptance criteria**:
+- Footer visible en todas las páginas.
+- Links a privacy switchean por locale automático.
+- Responsive: 3 columnas en desktop, stack en mobile.
+
+---
+
+## Fase 3 — Hero interactivo (T9–T11)
+
+### T9 — HeroCanvas básico: grid 2D estática
+
+**Estimación**: 3 h
+**Depende de**: T2
+**Archivos creados/modificados**:
+- `src/components/HeroCanvas.tsx` (client) — Canvas 2D que dibuja grid 30×20 estática
+- `src/lib/canvas-grid.ts` con función `drawStaticGrid(ctx, width, height)`
+
+**Acceptance criteria**:
+- Canvas renderiza grid uniforme de líneas sobre fondo transparente.
+- Líneas color `rgba(255,255,255,0.04)`.
+- Responsive: el canvas se ajusta al tamaño del contenedor (resize observer).
+- DPR awareness: nítido en pantallas Retina.
+
+---
+
+### T10 — HeroCanvas: algoritmo de distorsión + mouse tracking
+
+**Estimación**: 5 h
+**Depende de**: T9
+**Archivos creados/modificados**:
+- `src/components/HeroCanvas.tsx` (extender con animation loop)
+- `src/lib/canvas-grid.ts` agregar `drawDistortedGrid(ctx, mouse, vertices)`
+
+**Algoritmo**:
+- Tracking de `mouse` con `mousemove` listener (debounced a `requestAnimationFrame`).
+- Cada vertex (i,j) tiene `home = (xi, yj)` y `current = (cx, cy)` que se interpola.
+- En cada frame:
+  - `displacement = (mouse - home) * strength / (distance² + ε)`
+  - `current = lerp(home + displacement, current, damping)` (suaviza)
+- Líneas dibujadas con curva Bezier que pasa por 4 vertices consecutivos.
+- Vertices cercanos al cursor cambian color de `ink-4` a `signal` con alpha proporcional.
+
+**Acceptance criteria**:
+- Al pasar el cursor, las líneas se distorsionan visiblemente alrededor.
+- Vertices cerca del cursor toman tinte verde (signal).
+- Sin lag visible en MacBook Air M1 (60 fps sostenido).
+- Auto-pausa cuando mouse no se mueve por 2s.
+- Pausa cuando el hero no está visible (intersection observer).
+
+---
+
+### T11 — HeroCanvas: fallback mobile + lazy load
+
+**Estimación**: 2 h
+**Depende de**: T10
+**Archivos creados/modificados**:
+- `src/components/HeroCanvas.tsx` con detección `(hover: none)` y `prefers-reduced-motion`
+- `src/components/Hero.tsx` (server) que importa HeroCanvas con `next/dynamic` ssr:false
+- Fallback HTML/CSS con grid estático
+
+**Acceptance criteria**:
+- En mobile (touch device): canvas renderiza grid estática sin animation loop.
+- En desktop con `prefers-reduced-motion: reduce`: grid estática.
+- Canvas no bloquea LCP (lazy loaded después del Hero text).
+- Si JS falla: hero sigue mostrando tagline + CTA con fondo CSS grid del brand manual.
+
+---
+
+## Fase 4 — Secciones del home (T12–T16)
+
+### T12 — Section Hero (texto + CTA + canvas)
+
+**Estimación**: 3 h
+**Depende de**: T6, T7, T11
+**Archivos creados/modificados**:
+- `src/components/sections/Hero.tsx`
+- Strings en `messages/{en,es}.json` sección `hero`
+
+**Contenido**:
+- Tagline: "A foundry for intelligence" (siempre EN)
+- Subtitle: 1-2 líneas (EN y ES respectivos)
+- CTA button: "Let's talk" / "Hablemos" → scroll to #contact
+
+**Acceptance criteria**:
+- HeroCanvas atrás, contenido semántico delante.
+- Above-the-fold completo sin scroll.
+- CTA hace smooth scroll al form.
+- Texto legible sobre el canvas (suficiente contraste).
+
+---
+
+### T13 — Section Manifesto + Section Services
+
+**Estimación**: 4 h
+**Depende de**: T6
+**Archivos creados/modificados**:
+- `src/components/sections/Manifesto.tsx`
+- `src/components/sections/Services.tsx` (3 tarjetas: AI apps, Vertical OS, Architecture consulting)
+- Strings en `messages/{en,es}.json`
+
+**Acceptance criteria**:
+- Manifiesto: 3-4 párrafos cortos, max 60 chars per line en desktop.
+- Services: 3 cards en grid responsive (3 col desktop, 1 col mobile).
+- Cada card: título + descripción + icono opcional (SVG inline).
+- Sin precios, CTA implícito al form.
+
+---
+
+### T14 — Section Principles + Section Work
+
+**Estimación**: 3 h
+**Depende de**: T6
+**Archivos creados/modificados**:
+- `src/components/sections/Principles.tsx` (4 numerados: 01, 02, 03, 04)
+- `src/components/sections/Work.tsx` (Quitebe sin nombrar)
+- Strings en `messages/{en,es}.json`
+
+**Acceptance criteria**:
+- Principles: lista numerada con typography mono para los números (`01`, `02`...) y display para los títulos.
+- Work: caja con descripción agricultural ops system (1000+ hectares), tags `Backend · Mobile · BI`.
+- Sin imágenes del producto Quitebe (sin autorización).
+
+---
+
+### T15 — Section Contact (sin form todavía, solo layout)
+
+**Estimación**: 2 h
+**Depende de**: T6
+**Archivos creados/modificados**:
+- `src/components/sections/Contact.tsx` con layout: título + descripción + placeholder donde irá el form
+- Strings en `messages/{en,es}.json`
+
+**Acceptance criteria**:
+- Sección con anchor `#contact` para smooth scroll desde Hero CTA.
+- Layout completo (incluye form skeleton sin lógica todavía).
+- Footer va inmediatamente después de Contact.
+
+---
+
+### T16 — Ensamblar home completa
+
+**Estimación**: 1 h
+**Depende de**: T8, T12, T13, T14, T15
+**Archivos creados/modificados**:
+- `src/app/[locale]/page.tsx` componiendo todas las secciones en orden
+
+**Acceptance criteria**:
+- `/en` y `/es` muestran toda la home (Hero → Manifesto → Services → Principles → Work → Contact → Footer).
+- Scroll fluido entre secciones.
+- Sin layout shifts (CLS < 0.1).
+
+---
+
+## Fase 5 — Form + backend (T17–T19)
+
+### T17 — ContactForm component (frontend)
+
+**Estimación**: 4 h
+**Depende de**: T6, T15
+**Archivos creados/modificados**:
+- `src/components/ContactForm.tsx` (client)
+- `src/lib/schemas.ts` con Zod schema `ContactSchema`
+- Validación inline con react-hook-form
+
+**Campos**:
+- name, email, company, message (textarea), source (select), accepts_privacy (checkbox), website_url (honeypot oculto)
+
+**Acceptance criteria**:
+- Validación inline en cada blur del campo.
+- Submit deshabilitado hasta que todos los required pasen.
+- Estados: idle / submitting / success / error visibles.
+- Mensajes de error con `aria-live="polite"`.
+- Honeypot `website_url` invisible vía CSS (`position: absolute; left: -9999px`).
+
+---
+
+### T18 — API route `/api/contact` (backend)
+
+**Estimación**: 5 h
+**Depende de**: T17
+**Archivos creados/modificados**:
+- `src/app/api/contact/route.ts` (POST handler)
+- `src/lib/email.ts` (nodemailer transporter)
+- `src/lib/outline-api.ts` (cliente para crear lead doc en Outline)
+- `src/lib/rate-limit.ts` (in-memory simple)
+- `.env.local.example` actualizado con SMTP_*, OUTLINE_API_TOKEN, OUTLINE_LEADS_COLLECTION_ID
+
+**Flow**:
+1. Parse + validar Zod
+2. Check honeypot
+3. Rate limit por IP (3/hora)
+4. Enviar email via Gmail SMTP a `vizcaia.technologies@gmail.com` con CC a ambos socios
+5. Crear lead doc en Outline colección "Leads"
+6. Respuesta 200 / 4xx / 5xx
+
+**Acceptance criteria**:
+- POST con body válido → 200 + email enviado + lead en Outline.
+- POST con honeypot lleno → 200 silencioso (no procesa).
+- 4to POST de mismo IP en 1 hora → 429.
+- Errores de SMTP no rompen Outline (try/catch independiente).
+- Tests manuales con curl pasan.
+
+---
+
+### T19 — Crear colección "Leads" en Outline + verificar pipeline
+
+**Estimación**: 1 h
+**Depende de**: T18
+**Acciones**:
+- Vía API o UI, crear colección "Leads" en Outline workspace
+- Obtener `collectionId` y agregarlo a `.env.local` y a Coolify Env Vars
+- Test end-to-end: submit form en localhost → verificar email recibido + doc en Outline
+
+**Acceptance criteria**:
+- Colección "Leads" existe en Outline.
+- Submit del form en localhost crea doc visible en esa colección con campos formateados markdown.
+
+---
+
+## Fase 6 — Páginas privacy (T20)
+
+### T20 — Privacy policy EN + Aviso de privacidad ES
+
+**Estimación**: 3 h
+**Depende de**: T5
+**Archivos creados/modificados**:
+- `src/app/[locale]/privacy/page.tsx` (solo se renderiza si `locale === 'en'`)
+- `src/app/[locale]/aviso-de-privacidad/page.tsx` (solo si `locale === 'es'`)
+- Contenido inicial desde plantillas Termly/Iubenda + Habeas Data CCC
+
+**Acceptance criteria**:
+- `/en/privacy` muestra política inglés con menciones CCPA + GDPR.
+- `/es/aviso-de-privacidad` muestra política español con Habeas Data Colombia.
+- Footer linkea correctamente según locale.
+- Marcadas como `noindex` por ahora (hasta validar con abogado).
+
+---
+
+## Fase 7 — SEO + Analytics (T21–T22)
+
+### T21 — Metadata + sitemap + robots + OG image
+
+**Estimación**: 3 h
+**Depende de**: T16
+**Archivos creados/modificados**:
+- `src/app/[locale]/layout.tsx` exportando `metadata` por locale
+- `src/app/sitemap.ts` con ambas URLs + hreflang
+- `src/app/robots.ts` allow all + sitemap reference
+- `src/app/opengraph-image.tsx` (1200×630 dinámico con tagline + mark)
+- Schema.org Organization JSON-LD en root layout
+
+**Acceptance criteria**:
+- `vizcaia.com/sitemap.xml` lista `/en` y `/es` con hreflang.
+- `vizcaia.com/robots.txt` permite todo.
+- OG image se genera al request, cache 1 día.
+- Schema validator (https://search.google.com/test/rich-results) pasa sin errors.
+
+---
+
+### T22 — Cloudflare Web Analytics
+
+**Estimación**: 0.5 h
+**Depende de**: T1
+**Acciones**:
+- Crear site en Cloudflare → Web Analytics → obtener beacon token
+- Agregar `<script>` en `src/app/layout.tsx` solo en `NODE_ENV === 'production'`
+
+**Acceptance criteria**:
+- Script presente en HTML de producción, ausente en dev.
+- Analytics empieza a recibir pageviews al deploy.
+- Sin cookies set por el script.
+
+---
+
+## Fase 8 — Deploy (T23–T25)
+
+### T23 — Dockerfile multi-stage + .dockerignore
+
+**Estimación**: 2 h
+**Depende de**: T1
+**Archivos creados/modificados**:
+- `Dockerfile` con 3 stages (deps, builder, runner)
+- `.dockerignore`
+- `next.config.mjs` con `output: 'standalone'`
+
+**Acceptance criteria**:
+- `docker build -t vizcaia-web .` produce imagen < 200 MB.
+- `docker run -p 3000:3000 vizcaia-web` levanta sitio funcional.
+- Layer caching efectivo (cambio de código no re-instala deps).
+
+---
+
+### T24 — GitHub repo público/privado + GitHub Actions CI
+
+**Estimación**: 2 h
+**Depende de**: T1
+**Archivos creados/modificados**:
+- Crear repo `Vizcaia-Web` en GitHub (privado por ahora)
+- `.github/workflows/ci.yml` con: lint + typecheck + build
+- Push del código existente
+
+**Acceptance criteria**:
+- Push a `main` corre CI verde.
+- PR a `main` corre CI antes de merge.
+- Build time < 3 min.
+
+---
+
+### T25 — Deploy en Coolify + dominio
+
+**Estimación**: 2 h
+**Depende de**: T22, T23, T24
+**Acciones**:
+- En Coolify: nuevo Project `vizcaia-publicos` → nuevo Resource Application (Docker)
+- Conectar repo GitHub
+- Configurar dominio `vizcaia.com` + redirect `www`
+- Cargar Environment Variables (SMTP_*, OUTLINE_API_TOKEN, OUTLINE_LEADS_COLLECTION_ID, NEXT_PUBLIC_SITE_URL)
+- Deploy
+
+**Acceptance criteria**:
+- `https://vizcaia.com` resuelve con SSL Let's Encrypt válido.
+- `https://www.vizcaia.com` → 301 a apex.
+- `https://vizcaia.com/api/health` retorna `{ ok: true }`.
+- Form submit en producción crea email + lead en Outline.
+
+---
+
+## Fase 9 — QA + Lanzamiento (T26–T28)
+
+### T26 — Lighthouse audit + ajustes para >90 todas las métricas
+
+**Estimación**: 4 h
+**Depende de**: T25
+**Acciones**:
+- Lighthouse en producción tanto `/en` como `/es`
+- Identificar issues y arreglar (probablemente: imágenes, fonts, JS bundle)
+- Iterar hasta Performance + Accessibility + Best Practices + SEO > 90
+
+**Acceptance criteria**:
+- Performance > 90 en mobile y desktop.
+- Accessibility > 95.
+- Best Practices > 90.
+- SEO > 95.
+- LCP < 2.5s, CLS < 0.1, INP < 200ms.
+
+---
+
+### T27 — Accessibility audit con axe DevTools + screen reader manual
+
+**Estimación**: 3 h
+**Depende de**: T26
+**Acciones**:
+- Correr axe DevTools en cada página, arreglar issues
+- Test manual con VoiceOver (Mac) recorrendo toda la home
+- Verificar tab order, focus visible, skip link
+
+**Acceptance criteria**:
+- axe DevTools: 0 issues críticos, 0 issues serios.
+- VoiceOver lee toda la página con sentido.
+- Skip link funciona (primer Tab).
+- Form usable solo con teclado.
+
+---
+
+### T28 — Lanzamiento: DNS final + smoke test + actualizar Outline STATE
+
+**Estimación**: 1 h
+**Depende de**: T27
+**Acciones**:
+- Confirmar DNS `vizcaia.com` y `www.vizcaia.com` apuntando a 178.104.64.201 (gray cloud)
+- Smoke test: cada link, cada idioma, form completo de prueba
+- Actualizar doc "Estado de Vizcaia" en Outline marcando Fase 1 progress
+- Anunciar lanzamiento a Mateo
+
+**Acceptance criteria**:
+- Sitio público accesible desde cualquier red.
+- Test submit del form genera email + lead OK.
+- Outline "Estado de Vizcaia" actualizado.
+- Commit final + tag `v1.0.0` en GitHub.
+
+---
+
+## Resumen de estimaciones
+
+| Fase | Tasks | Horas estimadas |
+|---|---|---|
+| 1. Scaffolding | T1-T5 | 11.5 h |
+| 2. UI base | T6-T8 | 7 h |
+| 3. Hero canvas | T9-T11 | 10 h |
+| 4. Secciones home | T12-T16 | 13 h |
+| 5. Form + backend | T17-T19 | 10 h |
+| 6. Privacy | T20 | 3 h |
+| 7. SEO + Analytics | T21-T22 | 3.5 h |
+| 8. Deploy | T23-T25 | 6 h |
+| 9. QA + Launch | T26-T28 | 8 h |
+| **Total** | **28 tasks** | **~72 horas** |
+
+A **3-4 horas/día** = **~3 semanas calendario**.
+A **6 horas/día focal** = **~2 semanas calendario**.
+
+> Estimaciones reales suelen ser 1.5x. Plan realista: **3-4 semanas hasta `vizcaia.com` público**.
+
+---
+
+## Bitácora
+
+> Anotar aquí lo que se hace al ejecutar cada task. Formato: `T<N> <YYYY-MM-DD>: <qué se hizo, qué se aprendió, qué surgió>`.
+
+(vacío al inicio)
