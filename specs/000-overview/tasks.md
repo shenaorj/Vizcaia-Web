@@ -621,3 +621,48 @@ A **6 horas/día focal** = **~2 semanas calendario**.
 - Visualmente: pendiente validación manual del usuario (abrir `localhost:3010` y comparar con manual de marca HTML).
 
 **Siguiente**: T3 — Self-host fonts (Geist + Space Grotesk + Geist Mono + Instrument Serif).
+
+---
+
+### T3 — 2026-05-25 — ✅ Self-host fonts vía next/font/google
+
+**Qué se hizo**:
+- 4 fuentes integradas en `src/app/layout.tsx` con `next/font/google`:
+  - Space Grotesk (weights 500, 600)
+  - Geist (weights 400, 500)
+  - Geist Mono (weight 400)
+  - Instrument Serif (weight 400 italic)
+- Variables CSS `--font-space-grotesk-loaded`, `--font-geist-loaded`, `--font-geist-mono-loaded`, `--font-instrument-serif-loaded` aplicadas al `<html class="...">` y conectadas con el `@theme` definido en T2.
+- Subset Latin estricto en todas (no Cyrillic, no Greek, no CJK).
+- `display: 'swap'` en todas (texto visible inmediato con fallback, swap cuando carga la fuente real).
+
+**Decisión de approach — `next/font/google` vs `next/font/local`**:
+- Plan original decía `next/font/local`. Cambié a `next/font/google` porque:
+  - Mismo resultado final: las fuentes se sirven desde NUESTRO bundle (`_next/static/media/*.woff2`), no Google CDN en runtime.
+  - Cero trabajo manual de descargar woff2 y subset.
+  - Next maneja el subset automático y optimal.
+  - Requiere conexión a Google solo durante `pnpm build` (build-time). Runtime es self-hosted.
+- Si en el futuro queremos build offline (ej. CI sin internet), migramos a `next/font/local`. Por ahora innecesario.
+
+**Bundle size**:
+- Primer intento con 3 weights de Space Grotesk + 3 de Geist + 2 de Geist Mono + 1 italic = 220 kB (excede budget 200 kB).
+- Reducí weights al mínimo expresivo del brand manual: 2+2+1+1 = 6 weights → **179.2 kB total**, 16 archivos woff2 (Next divide cada peso en sub-chunks por glyph range).
+- Margen disponible: ~21 kB para agregar weight si una sección lo necesita.
+
+**Optimizaciones automáticas que Next aplicó**:
+- 4 `<link rel="preload" as="font" crossorigin>` en `<head>` para weights críticos above-the-fold.
+- `@font-face` declarations en CSS chunk minificado.
+- Subset Latin generado al build, no all-Unicode.
+
+**Qué se aprendió**:
+- En Tailwind 4, las variables `--font-*` definidas en `@theme` son CSS custom properties. Las variables que Next inyecta vía `font.variable` son OTRAS variables (con sufijo random). Conecté ambas referenciando la variable de Next desde el fallback del @theme: `--font-display: var(--font-space-grotesk-loaded, 'Space Grotesk'), system-ui, sans-serif;`.
+- Path real de las fuentes es `/_next/static/media/*.woff2`, no `/fonts/*.woff2` como decía el plan. Mismo principio (bundle propio), nomenclatura diferente.
+- Turbopack dev no inyecta los preload tags de fuentes (solo production build). Verificación final siempre con `pnpm build && pnpm start`.
+
+**Acceptance criteria**: 4/4 ✓
+- Fuentes self-hosted en `/_next/static/media/` ✓ (no llamadas a fonts.gstatic.com en runtime)
+- Bundle total fuentes < 200 kB ✓ (179.2 kB)
+- Preload tags above-the-fold ✓ (4 preload links)
+- `font-display: swap` activo ✓
+
+**Siguiente**: T4 — Setup i18n con segment `[locale]` + dictionaries.

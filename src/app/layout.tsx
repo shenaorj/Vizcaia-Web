@@ -1,5 +1,45 @@
 import type { Metadata } from 'next';
+import { Geist, Geist_Mono, Instrument_Serif, Space_Grotesk } from 'next/font/google';
 import './globals.css';
+
+/**
+ * Fuentes del brand manual de Vizcaia.
+ *
+ * `next/font/google` descarga las fuentes en build-time desde Google Fonts y las
+ * sirve desde nuestro propio bundle (self-hosted, sin runtime CDN). Subset Latin
+ * estricto. `display: swap` para FCP rápido + fallback visible mientras carga.
+ *
+ * Las variables CSS (`--font-*-loaded`) se conectan al `@theme` en globals.css.
+ */
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  weight: ['500', '600'],
+  variable: '--font-space-grotesk-loaded',
+  display: 'swap',
+});
+
+const geist = Geist({
+  subsets: ['latin'],
+  weight: ['400', '500'],
+  variable: '--font-geist-loaded',
+  display: 'swap',
+});
+
+const geistMono = Geist_Mono({
+  subsets: ['latin'],
+  weight: ['400'],
+  variable: '--font-geist-mono-loaded',
+  display: 'swap',
+});
+
+const instrumentSerif = Instrument_Serif({
+  subsets: ['latin'],
+  weight: ['400'],
+  style: ['italic'],
+  variable: '--font-instrument-serif-loaded',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: 'Vizcaia — A foundry for intelligence',
@@ -9,8 +49,15 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const fontVars = [
+    spaceGrotesk.variable,
+    geist.variable,
+    geistMono.variable,
+    instrumentSerif.variable,
+  ].join(' ');
+
   return (
-    <html lang="en">
+    <html lang="en" className={fontVars}>
       <body>{children}</body>
     </html>
   );
