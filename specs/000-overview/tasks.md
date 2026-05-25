@@ -591,3 +591,33 @@ A **6 horas/día focal** = **~2 semanas calendario**.
 - `pnpm dev` arranca en 282ms con Turbopack, HTTP 200, sirve hero placeholder.
 
 **Siguiente**: T2 — tokens del brand manual en Tailwind 4 (CSS `@theme`).
+
+---
+
+### T2 — 2026-05-25 — ✅ Tokens del brand manual en Tailwind 4
+
+**Qué se hizo**:
+- Tokens configurados en `src/app/globals.css` con `@theme {}` (Tailwind 4 CSS-first, no `tailwind.config.ts`).
+- **Paleta**: `ink` + 3 shades, `paper` + 2 shades, `signal` + signal-2, `forge`, `moss`, `smoke`, `flare`, `rule-dark`, `rule-light`.
+- **Fontfaces**: `font-display`, `font-sans`, `font-mono`, `font-serif` con variables `--font-*-loaded` que poblará T3 (fonts reales).
+- **Letter spacing**: `tracking-tight-{2,3,4,5}`, `tracking-wide-{04,08,12,16,18}` según el brand manual.
+- Body default: `bg-ink` + `text-paper` + `font-sans` + `font-feature-settings: 'ss03', 'cv05'`.
+- `page.tsx` reemplazado con preview de tokens: 13 swatches paleta + 4 muestras tipografía + 9 muestras letter-spacing. Sirve para validar visualmente.
+
+**Qué se aprendió**:
+- En Tailwind 4, las clases se generan dinámicamente desde los nombres de variables CSS:
+  - `--color-ink: #...` → `.bg-ink`, `.text-ink`, `.border-ink`
+  - `--font-display: ...` → `.font-display`
+  - `--tracking-tight-5: ...` → `.tracking-tight-5`
+- Bundle CSS final: **18,779 bytes** (incluyendo reset + tokens + tipografías + Tailwind base + clases efectivamente usadas en page.tsx). Muy aceptable.
+- `border-rule-dark` y `border-rule-light` funcionan porque los registré como colores en `@theme`.
+
+**Verificación runtime**:
+- 9 clases custom críticas confirmadas en el CSS compilado del dev server: `bg-ink`, `bg-paper`, `text-signal`, `bg-flare`, `font-display`, `font-serif`, `tracking-tight-5`, `tracking-wide-16`, `border-rule-dark`.
+
+**Acceptance criteria**: 3/3 ✓
+- Clases `bg-ink`, `text-signal`, `bg-paper-2`, `text-flare` generadas y aplicadas.
+- Letter-spacing classes funcionan.
+- Visualmente: pendiente validación manual del usuario (abrir `localhost:3010` y comparar con manual de marca HTML).
+
+**Siguiente**: T3 — Self-host fonts (Geist + Space Grotesk + Geist Mono + Instrument Serif).

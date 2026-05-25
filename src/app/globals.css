@@ -1,14 +1,76 @@
 @import "tailwindcss";
 
-/* Base resets and global styles will live here.
- * Tokens del brand manual se agregan en T2 con @theme {}.
- */
+/* ============================================================
+   Tokens del brand manual de Vizcaia
+   Fuente: ~/Documents/Vizcaia/Manual Marca Vizcaia/styles.css
+   ============================================================ */
+
+@theme {
+  /* ============ Paleta ============ */
+
+  /* Ink — fondos oscuros */
+  --color-ink: #0A0F0C;
+  --color-ink-2: #141A16;
+  --color-ink-3: #1F2722;
+  --color-ink-4: #2D3631;
+
+  /* Paper — superficies claras */
+  --color-paper: #F4F1E8;
+  --color-paper-2: #E8E3D4;
+  --color-paper-3: #D7D2C2;
+
+  /* Signal — verde Vizcaia primario */
+  --color-signal: #00E37A;
+  --color-signal-2: #5BFFAE;
+
+  /* Acentos / variantes */
+  --color-forge: #007A45;
+  --color-moss: #1B3328;
+  --color-smoke: #6B7570;
+  --color-flare: #FF5A3C;
+
+  /* Reglas / borders sutiles */
+  --color-rule-dark: rgba(255, 255, 255, 0.10);
+  --color-rule-light: rgba(10, 15, 12, 0.12);
+
+  /* ============ Tipografías ============
+     Las fuentes reales se self-hostean en T3 con next/font/local.
+     Por ahora system fallbacks. Las variables CSS (--font-*-loaded) las
+     poblará T3 al cargar los archivos woff2.
+   */
+  --font-display: var(--font-space-grotesk-loaded, 'Space Grotesk'), system-ui, sans-serif;
+  --font-sans: var(--font-geist-loaded, 'Geist'), system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono-loaded, 'Geist Mono'), ui-monospace, monospace;
+  --font-serif: var(--font-instrument-serif-loaded, 'Instrument Serif'), Georgia, serif;
+
+  /* ============ Letter spacing del manual ============ */
+  --tracking-tight-2: -0.02em;
+  --tracking-tight-3: -0.03em;
+  --tracking-tight-4: -0.04em;
+  --tracking-tight-5: -0.05em;
+  --tracking-wide-04: 0.04em;
+  --tracking-wide-08: 0.08em;
+  --tracking-wide-12: 0.12em;
+  --tracking-wide-16: 0.16em;
+  --tracking-wide-18: 0.18em;
+}
+
+/* ============================================================
+   Resets / base styles
+   ============================================================ */
 
 html,
 body {
   margin: 0;
   padding: 0;
+  background-color: var(--color-ink);
+  color: var(--color-paper);
+  font-family: var(--font-sans);
   font-feature-settings: 'ss03', 'cv05';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
 }
