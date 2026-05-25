@@ -10,12 +10,12 @@
 
 Sitio web corporativo de Vizcaia Technologies. Vive en `https://vizcaia.com` (y `https://www.vizcaia.com` redirige). Es la cara pública de la empresa.
 
-**Alcance v1**: una landing de una sola página (one-pager) en español, con secciones bien diferenciadas, terminando en un form de contacto que captura leads y los entrega a inbox + Outline.
+**Alcance v1**: una landing de una sola página (one-pager) **bilingüe — inglés primario, español secundario** (ver ADR-008: target USA). Selector de idioma EN/ES en header. Form de contacto al final que captura leads y los entrega a inbox + Outline.
 
 **Fuera de alcance en v1** (explícito):
 - Blog
 - Casos de estudio dedicados (cuando tengamos clientes públicos)
-- Multi-idioma (solo español en v1)
+- Multi-idioma más allá de EN+ES
 - Sección "trabaja con nosotros" / careers
 - Autenticación, área privada, dashboards
 - e-commerce o pagos
@@ -27,23 +27,24 @@ Sitio web corporativo de Vizcaia Technologies. Vive en `https://vizcaia.com` (y 
 3. **Captura de leads tempranos**. Aún sin proceso comercial maduro, queremos que cualquier persona interesada deje sus datos. Sin esto, perdemos contactos warm.
 4. **Disciplina de SDD aplicada**. Es el primer proyecto Vizcaia que hacemos con SDD desde el inicio. Sirve como template para los siguientes.
 
-## 3. ¿Para quién?
+## 3. ¿Para quién? (ver ADR-008 — pivot USA)
 
 **Target primario (visitante ideal del sitio):**
-- Decision maker (CEO/COO/Gerente de Operaciones/CIO) de empresa mediana colombiana o LATAM.
-- Industria: agro (palma, ganadería, café), logística menor, retail B2B, servicios profesionales.
-- Está evaluando AI/automatización pero no sabe con quién hablar.
-- Tiene presupuesto pequeño-medio (50-300 MM COP por proyecto inicial).
-- Decide en gran parte por confianza y referidos, no por SEO/Google Ads.
+- Decision maker (CEO/COO/VP Operations/CTO) de US mid-market company (50–500 empleados, revenue $10M–$200M USD).
+- Cross-industry: no nos limitamos a un sector al inicio. Healthcare ops, logistics, agriculture, SaaS internal tools, professional services — donde haya procesos manuales repetitivos.
+- Está evaluando AI/automation pero no sabe con quién hablar — frustrado con vendors que prometen demos y no entregan producción.
+- Budget tier típico: $50K–$300K USD por proyecto inicial.
+- Decide en gran parte por trust y referidos, no por SEO/Ads.
 
 **Target secundario:**
-- Equipos técnicos de empresas grandes que necesitan capacidad puntual.
-- Otros estudios de software que quieren subcontratar AI específico.
+- Internal engineering teams en empresas más grandes que necesitan capacidad puntual.
+- LATAM enterprises (Colombia, México, Chile) si llegan por warm intro — atendemos en español pero sin outreach activo.
+- Otros estudios de software que quieren outsource AI específico.
 
-**No target (no diseñamos para ellos):**
+**No target:**
 - Consumer (B2C masivo).
 - Empresas que buscan "el más barato" — no competimos por precio.
-- Startups que buscan equity-pay — no aceptamos.
+- Startups que pagan en equity.
 
 ## 4. Métricas de éxito
 
@@ -105,19 +106,22 @@ Una sola página, scroll vertical. Secciones en orden:
    - Redes (si tienen — LinkedIn al menos)
    - "© 2026 Vizcaia Technologies. Casanare, Colombia."
 
-### Aviso de privacidad (`/aviso-de-privacidad`)
+### Privacy policy (`/privacy` y `/aviso-de-privacidad`)
 
-Página separada accesible desde footer. Obligatorio para Habeas Data en Colombia (Ley 1581 de 2012).
+Dos versiones (EN y ES) accesibles desde footer:
 
-Contenido mínimo:
-- Quién es el responsable del tratamiento (Vizcaia Technologies + dato de contacto)
-- Qué datos se recolectan (los del form)
-- Para qué se usan (responder solicitudes comerciales)
-- Cuánto tiempo se guardan
-- Derechos del titular (consulta, rectificación, supresión)
-- Cómo ejercer derechos (email a `privacidad@vizcaia.com` o `hola@vizcaia.com`)
+- **EN `/privacy`**: cubre CCPA (California Consumer Privacy Act) + lenguaje compatible con GDPR (visitantes EU pueden caer). Foco USA.
+- **ES `/aviso-de-privacidad`**: Habeas Data colombiano (Ley 1581 de 2012) para visitantes LATAM.
 
-> **Decisión pendiente**: ¿auto-generamos con plantilla CCC o consultamos abogado? Para v1 plantilla está OK, pero antes de hacer outreach serio: validar con abogado.
+Contenido mínimo en cada versión:
+- Identidad del controlador / responsable del tratamiento (Vizcaia Technologies + dato de contacto)
+- Qué datos recolectamos (los del form)
+- Para qué se usan (responder inquiries comerciales)
+- Cuánto tiempo retención
+- Derechos del usuario (access, correction, deletion / consulta, rectificación, supresión)
+- Cómo ejercer derechos (`privacy@vizcaia.com` y `privacidad@vizcaia.com`)
+
+> **Decisión pendiente**: para v1 usar plantillas de ambos (Termly, Iubenda u OpenAI legal template). Antes de outreach serio: validar con abogado USA. Para LATAM, plantilla CCC + revisión local.
 
 ## 6. Form de contacto
 
@@ -211,12 +215,14 @@ Detalle en `plan.md`. Resumen:
 
 ## 12. Cosas que NO sabemos todavía (a decidir en `/plan` y antes de implementar)
 
-- [PENDIENTE] **Texto exacto del hero y manifiesto**. Hay placeholders aquí; el texto final lo redactamos con Mateo antes de publicar.
-- [PENDIENTE] **Si el form crea entry en Outline via API** o solo manda email. Pro: tracking en Outline. Contra: complejidad de mantener API token de Outline.
-- [PENDIENTE] **Email final del corp**: `hola@vizcaia.com` requiere Google Workspace o forwarding desde Cloudflare Email Routing. Decidir.
-- [PENDIENTE] **Analytics**: Plausible self-hosted ($0 + esfuerzo deploy) vs Cloudflare Web Analytics ($0 sin esfuerzo). Probable Cloudflare.
-- [PENDIENTE] **Foto/render del equipo** para sección de "quiénes somos" (si la agregamos en v1 o v1.1).
-- [PENDIENTE] **Casos preview**: Quitebe se menciona con nombre del cliente? Pedir autorización al jefe de Quitebe antes de publicar.
+- [PENDIENTE] **Texto exacto del hero y manifiesto en EN y ES**. Hay placeholders aquí; el texto final lo redactamos con Mateo antes de publicar. **El slogan "A foundry for intelligence" NO se traduce** — queda en inglés siempre (brand asset).
+- [PENDIENTE] **Si el form crea entry en Outline via API** o solo manda email. (Ya tenemos el token via API — la respuesta inclina a sí, sumarlo).
+- [PENDIENTE] **Email final del corp**: `hello@vizcaia.com` (formal US) + alias `hola@vizcaia.com` para LATAM. Requiere Google Workspace o Cloudflare Email Routing.
+- [PENDIENTE] **Analytics**: Plausible self-hosted vs Cloudflare Web Analytics. Probable Cloudflare (zero setup).
+- [PENDIENTE] **Foto/render del equipo** — opcional, decisión en `/plan`.
+- [PENDIENTE] **Caso Quitebe**: cómo mencionarlo en EN sin localizarlo como LATAM-specific. Probable: "Built a production-scale agricultural operations system covering 1000+ hectares — backend, mobile, BI."
+- [PENDIENTE] **Selector de idioma**: ¿persistir en cookie? ¿default por geo-IP? ¿botón EN/ES sticky en header? Decidir en `/plan`.
+- [PENDIENTE] **i18n approach técnico**: Next.js i18n nativo (`app/[locale]/...`) vs librería como `next-intl`. Decisión en `/plan`.
 
 ## 13. Riesgos identificados
 
