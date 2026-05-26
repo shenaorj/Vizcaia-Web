@@ -15,5 +15,13 @@
   "preview": {
     "label": "Token preview · T4",
     "footer": "scaffolding · T4 done · i18n active"
+  },
+  "footer": {
+    "tagline": "A foundry for intelligence",
+    "linksLabel": "Links",
+    "privacy": "Privacy policy",
+    "contactLabel": "Contact",
+    "copyright": "© 2026 Vizcaia Technologies",
+    "location": "Headquartered in Casanare, Colombia · Serving global"
   }
 }

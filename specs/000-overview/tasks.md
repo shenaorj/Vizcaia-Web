@@ -784,3 +784,46 @@ A **6 horas/día focal** = **~2 semanas calendario**.
 - Variantes coherentes con la voz austera del brand (mono uppercase, sin shadows, sin gradientes) ✓
 
 **Siguiente**: T7 — MarkSpark component refinement (favicon + apple-touch-icon + dynamic icon) + Footer (T8).
+
+---
+
+### T7 — 2026-05-25 — ✅ Favicon + Apple touch icon dinámicos
+
+**Qué se hizo**:
+- `src/app/icon.tsx`: ImageResponse de 32×32 con fondo ink + Mark spark color signal. Next 16 lo expone en `/icon` y agrega `<link rel="icon">` al HTML.
+- `src/app/apple-icon.tsx`: ImageResponse de 180×180 con mismo diseño escalado. Next agrega `<link rel="apple-touch-icon">`.
+- `MarkSpark.tsx` ya estaba bien desde T5 — no requiere refactor.
+
+**Verificación**:
+- `GET /icon` → 200 OK, `content-type: image/png`
+- `GET /apple-icon` → 200 OK, `content-type: image/png`
+- HTML contiene ambos `<link>` tags con cache busters (`/icon?547cd8ae4c839c55`).
+
+**Acceptance criteria**: 3/3 ✓
+- `<MarkSpark size={32} />` renderiza con currentColor ✓
+- Favicon visible en pestaña ✓
+- Apple touch icon disponible para iOS ✓
+
+---
+
+### T8 — 2026-05-25 — ✅ Footer global localizado
+
+**Qué se hizo**:
+- `src/components/sections/Footer.tsx`: 3 columnas en md+ (Brand · Links · Contact), stack en mobile. Bottom row con copyright + location.
+- Strings agregados a `messages/{en,es}.json` bajo clave `footer`.
+- Privacy link mapeado por locale: `/en/privacy` ↔ `/es/aviso-de-privacidad` (los paths se crean en T20).
+- Wireado en `LocaleShell` del layout (después de `<div id="main">{children}</div>`).
+- `mt-32` en el footer separa visualmente del contenido sin caer pegado.
+
+**Verificación runtime**:
+- En `/en`: "Privacy policy" link a `/en/privacy`, "Headquartered in Casanare, Colombia · Serving global"
+- En `/es`: "Aviso de privacidad" link a `/es/aviso-de-privacidad`, "Sede en Casanare, Colombia · Servicio global"
+- Copyright "© 2026 Vizcaia Technologies" en ambos.
+- Email contacto `hello@vizcaia.com` (placeholder hasta Google Workspace).
+
+**Acceptance criteria**: 3/3 ✓
+- Footer visible en todas las páginas ✓ (root layout)
+- Links a privacy switchean por locale ✓
+- Responsive: 3 columnas desktop, stack mobile ✓ (`grid-cols-1 md:grid-cols-3`)
+
+**Siguiente**: Fase 3 — Hero canvas interactivo (T9 grid estática · T10 distorsión por mouse · T11 fallback mobile + lazy).
