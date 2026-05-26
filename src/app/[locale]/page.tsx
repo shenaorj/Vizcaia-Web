@@ -1,19 +1,33 @@
+import { notFound } from 'next/navigation';
+import { getDictionary } from '@/lib/dictionaries';
+import { isLocale } from '@/lib/i18n';
+
 /**
- * T2 — Página de prueba de tokens del brand manual.
- * Esta página se reemplaza con el Hero real cuando lleguemos a T12.
+ * T4 — Página localizada de prueba.
+ * Mantenemos el preview de tokens del brand manual (T2/T3) y le agregamos
+ * el subtitle bilingüe + footer label desde los dictionaries para validar i18n.
+ * Esta página se reemplaza con el Hero real en T12.
  */
-export default function HomePage() {
+export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  if (!isLocale(locale)) notFound();
+
+  const dict = await getDictionary(locale);
+
   return (
     <main className="min-h-screen p-12 font-sans">
       {/* Hero placeholder */}
       <section className="mb-16">
         <p className="font-mono text-xs tracking-wide-16 uppercase text-signal opacity-60">
-          Vizcaia / Token preview · T2
+          Vizcaia / {dict.preview.label}
         </p>
         <h1 className="font-display mt-4 text-7xl font-medium tracking-tight-5">
           vizc<em className="font-serif italic text-signal">ai</em>a
         </h1>
-        <p className="mt-4 font-sans text-lg text-paper opacity-70">A foundry for intelligence.</p>
+        <p className="mt-4 font-sans text-lg text-paper opacity-70">{dict.hero.subtitle}</p>
+        <p className="mt-2 font-mono text-[11px] tracking-wide-16 uppercase text-paper opacity-40">
+          locale: {locale}
+        </p>
       </section>
 
       {/* Paleta */}
@@ -80,7 +94,7 @@ export default function HomePage() {
       </section>
 
       <p className="font-mono text-xs tracking-wide-16 uppercase text-paper opacity-30">
-        scaffolding · T2 done · tokens verified
+        {dict.preview.footer}
       </p>
     </main>
   );

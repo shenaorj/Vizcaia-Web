@@ -666,3 +666,46 @@ A **6 horas/día focal** = **~2 semanas calendario**.
 - `font-display: swap` activo ✓
 
 **Siguiente**: T4 — Setup i18n con segment `[locale]` + dictionaries.
+
+---
+
+### T4 — 2026-05-25 — ✅ i18n con segment `[locale]` + dictionaries + middleware
+
+**Qué se hizo**:
+- `src/lib/i18n.ts`: locales `['en', 'es']`, `defaultLocale = 'en'`, type `Locale`, type-guard `isLocale`, `localeLabels`.
+- `src/lib/dictionaries.ts`: dynamic imports lazy, type `Dictionary` derivado del JSON en.
+- `src/messages/en.json` y `src/messages/es.json`: keys mínimas (`meta`, `hero`, `common`, `preview`). Se llenan en T12-T16.
+- `src/middleware.ts`: redirige `/` → `/en`. Matcher excluye `_next`, `api`, archivos estáticos.
+- `src/app/[locale]/layout.tsx`: valida locale, `generateStaticParams()` pre-renderiza ambos en build, `generateMetadata()` arma title/description/canonical/hreflang por locale.
+- `src/app/[locale]/page.tsx`: preview de tokens portado, ahora muestra `dict.hero.subtitle` y `dict.preview.*` según locale.
+- `src/app/page.tsx` eliminado (la home vive en `[locale]/`).
+
+**Qué se aprendió**:
+- **Next 16 hace `params` async**: en page/layout tipo `params: Promise<{ locale: string }>` → `const { locale } = await params`. No es el patrón viejo síncrono.
+- **Cache `.next/types/` queda stale al renombrar/mover páginas**. Primer typecheck post-cambio falló con `Cannot find module '../../src/app/page.js'` apuntando al archivo borrado. `rm -rf .next` resuelve. Documentar como tip.
+- **`hrefLang` no `hreflang`**: Next renderiza con camelCase en JSX (mi grep `hreflang` no matcheó, eran `hrefLang`). Cosmético — los crawlers no distinguen mayúsculas en HTML.
+- **`alternates.languages`** en `Metadata` genera 3 tags: `en`, `es`, `x-default`. SEO friendly desde día 1.
+
+**Route map después del build**:
+```
+○  /_not-found
+●  /[locale]       (SSG, pre-rendered)
+   ├ /en
+   └ /es
+ƒ  Proxy (Middleware)
+```
+
+**Acceptance criteria**: 5/5 ✓
+- `localhost:3010/` → 307 redirect a `/en` ✓
+- `localhost:3010/en` muestra subtitle inglés ("We build AI agents...") ✓
+- `localhost:3010/es` muestra subtitle español ("Construimos AI agents...") ✓
+- `localhost:3010/fr` → 404 ✓
+- Type `Locale` exportado y usado en componentes ✓
+
+**Bonus que no estaba en acceptance pero ya quedó**:
+- `<link rel="canonical">` por locale.
+- `<link rel="alternate" hrefLang="...">` para en, es, x-default.
+- `<title>` y `<meta name="description">` por locale.
+- `generateStaticParams` → ambas rutas pre-renderizadas estáticamente (no SSR).
+
+**Siguiente**: T5 — Layout base + LanguageSwitcher + Header sticky.

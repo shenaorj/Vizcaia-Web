@@ -1,0 +1,19 @@
+{
+  "meta": {
+    "title": "Vizcaia — A foundry for intelligence",
+    "description": "Construimos AI agents y automatizaciones para empresas medianas. Producción real, no demos."
+  },
+  "hero": {
+    "tagline": "A foundry for intelligence",
+    "subtitle": "Construimos AI agents y automatizaciones que llegan a producción. No demos.",
+    "cta": "Hablemos"
+  },
+  "common": {
+    "openInGoogleCalendar": "Abrir en Google Calendar",
+    "skipToContent": "Saltar al contenido principal"
+  },
+  "preview": {
+    "label": "Vista previa de tokens · T4",
+    "footer": "scaffolding · T4 done · i18n activo"
+  }
+}
