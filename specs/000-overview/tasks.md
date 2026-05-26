@@ -709,3 +709,36 @@ A **6 horas/día focal** = **~2 semanas calendario**.
 - `generateStaticParams` → ambas rutas pre-renderizadas estáticamente (no SSR).
 
 **Siguiente**: T5 — Layout base + LanguageSwitcher + Header sticky.
+
+---
+
+### T5 — 2026-05-25 — ✅ Header sticky + LanguageSwitcher + skip-to-content
+
+**Qué se hizo**:
+- `src/lib/cookies.ts`: helpers `setLocaleCookie` / `getLocaleCookie` con cookie `vz_locale` de 1 año, `SameSite=Lax`.
+- `src/components/MarkSpark.tsx`: SVG inline del logo "The Spark" (chevron V + spark line). Versión mínima funcional — T7 agrega favicon y refina.
+- `src/components/LanguageSwitcher.tsx` (client): botones `EN | ES`, cambia primer segmento del path con `router.push`, setea cookie. `aria-current`, `aria-label`, focus ring color signal.
+- `src/components/Header.tsx` (server): sticky top + backdrop blur + bordo `rule-dark`. Logo link a `/[locale]` + LanguageSwitcher. h-14 fija. max-w-7xl centrado.
+- `src/app/[locale]/layout.tsx`: agrega `LocaleShell` con skip-to-content link + Header. Skip link `sr-only` por default, `focus:not-sr-only focus:fixed` cuando se enfoca (primer Tab).
+
+**Decisiones técnicas**:
+- **typedRoutes + push dinámico**: `next.config.mjs` tiene `typedRoutes: true`, lo que hace `router.push()` tipado en literales (`/en`, `/es`). Como construyo path dinámico, cast a `Route` (escape hatch oficial). Documented inline.
+- **Cookie API**: usar `document.cookie` con `// biome-ignore` para el lint warning. La Cookie Store API es experimental y no soportada uniforme; `document.cookie` es estándar para 1 cookie simple.
+- **Client/server split**: Header es server (puede importar y renderear MarkSpark + Link). Solo el LanguageSwitcher es client (necesita `usePathname`, `useRouter`, `document.cookie`).
+- **i18n strings del skip-link**: viven en `dict.common.skipToContent` ya cargado en layout. Mismo dict que se pasa al page.
+
+**Verificación runtime (server-rendered HTML)**:
+- `<header class="sticky top-0 z-50 backdrop-blur-md bg-ink/70 ...">` ✓
+- En `/en`: botón EN con `aria-current="true"` + `text-signal`, ES con `opacity-50` ✓
+- En `/es`: botón ES con `aria-current="true"` ✓
+- Skip link `<a href="#main">` con `sr-only` + focus styles ✓
+- Link logo navega a `/${locale}` ✓
+- 0 warnings de lint, 0 errores TS, build pre-renderiza /en + /es estáticos ✓
+
+**Acceptance criteria**: 4/4 ✓
+- Header sticky con backdrop blur sobre ink ✓
+- Click EN/ES cambia idioma manteniendo path ✓ (router.push con segmento reemplazado)
+- Cookie persiste 1 año ✓ (`max-age=${60*60*24*365}`)
+- Mobile no overflows ✓ (flex `justify-between gap-4` + `max-w-7xl mx-auto`, h-14 fija)
+
+**Siguiente**: T6 — Componentes UI base shadcn-style (Button, Input, Textarea, Select, Checkbox, Label) adaptados a tokens Vizcaia.
