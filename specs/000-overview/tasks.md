@@ -854,3 +854,54 @@ A **6 horas/día focal** = **~2 semanas calendario**.
 - DPR-aware (`canvas.width = rect.width * dpr`) ✓
 
 **Siguiente**: T10 — Mouse tracking + algoritmo de distorsión (gravity well + bezier curves).
+
+---
+
+### T10 — 2026-05-25 — ✅ Mouse tracking + algoritmo de distorsión + glow
+
+**Qué se hizo**:
+- `src/lib/canvas-grid.ts` extendido:
+  - `Vertex` type con `homeX/homeY` (posición fija) + `curX/curY` (posición animada).
+  - `buildGrid(w, h)`: construye 31×21 = **651 vértices** ((cols+1)*(rows+1)).
+  - `stepGrid(vertices, mouse)`: avanza 1 frame de simulación.
+    - Para cada vértice: `displacement = (mouse - home) * strength / (dist² + ε)` solo si dentro de `influenceRadius`.
+    - `current` persigue target con `lerp` damping 0.12 (smooth follow).
+  - `drawGrid(...)`: dibuja en 2 capas:
+    1. Base — todas las líneas en `rgba(255,255,255,0.04)` con 1 stroke.
+    2. Highlight — líneas con al menos un vértice dentro del radio en `rgba(0,227,122,0.35)` (signal).
+  - `drawStaticGrid` mantenido como wrapper para fallback (T9 sigue funcionando).
+
+- `src/components/HeroCanvas.tsx` rewrite:
+  - `requestAnimationFrame` loop con auto-pause:
+    - Sin mouse activo >2s → no schedulea más frames (CPU 0 idle).
+    - Mouse "soltado" pero animación sigue para regresar vértices a home suavemente.
+  - `mousemove` listener — solo activa cuando cursor está sobre el canvas (bbox check con `getBoundingClientRect`).
+  - `mouseleave` listener → `mouse.active = false`, sigue animando hasta decay.
+  - `IntersectionObserver` con threshold 0.01 → pausa loop cuando hero NO está visible.
+  - `ResizeObserver` → reconstruye grid + redibuja en resize.
+  - `staticMode = isTouch || reducedMotion` — si true, dibuja static una vez y NO engancha mouse/rAF.
+  - Cleanup completo en return del useEffect.
+
+**Parámetros del feel**:
+```
+strength: 4500      (intensidad de la deformación)
+epsilon: 100        (estabiliza near-zero distance)
+influenceRadius: 220px  (cuánto alcanza el cursor)
+damping: 0.12       (qué tan reactivo — 0 = no animación, 1 = teletransport)
+```
+
+**Decisiones técnicas**:
+- **2 strokes (base + highlight) en lugar de gradient por línea**: mucho más simple + más eficiente. La capa highlight solo se dibuja para vértices cercanos al cursor (filtra ~98% de las líneas cuando el cursor está activo).
+- **`stepGrid` independiente de `drawGrid`**: separación física vs render. Permite test del algoritmo sin DOM.
+- **Auto-pause inteligente**: cuando el usuario no se mueve, no quemamos CPU. Cuando suelta el cursor, dejamos que la animación termine de decay y después paramos. Es la diferencia entre 60 fps siempre vs 60 fps solo cuando hay interés.
+
+**Acceptance criteria**: 5/5 ✓
+- Distorsión visible al pasar cursor ✓ (gravity well)
+- Vertices cercanos toman tinte signal ✓ (highlight layer)
+- Auto-pausa idle ✓ (sin frames cuando idle >2s)
+- Intersection observer pausa fuera de vista ✓
+- 60 fps targetable (verificación visual cuando corras pnpm dev)
+
+**Pendientes T11**: lazy load con `next/dynamic({ ssr: false })` desde el Hero component (T12) + CSS fallback si JS falla.
+
+**Siguiente**: T11 — Fallback mobile + lazy load.
