@@ -1,4 +1,10 @@
 import { notFound } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
 import { getDictionary } from '@/lib/dictionaries';
 import { isLocale } from '@/lib/i18n';
 
@@ -90,6 +96,89 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           <p className="tracking-wide-12">tracking-wide-12</p>
           <p className="tracking-wide-16">tracking-wide-16</p>
           <p className="tracking-wide-18">tracking-wide-18</p>
+        </div>
+      </section>
+
+      {/* Componentes UI — T6 */}
+      <section className="mb-16">
+        <h2 className="font-mono text-xs tracking-wide-16 uppercase text-paper opacity-50 mb-6">
+          Componentes UI · T6
+        </h2>
+
+        {/* Buttons */}
+        <div className="mb-8">
+          <p className="font-mono text-[10px] tracking-wide-16 uppercase text-paper opacity-40 mb-3">
+            Buttons — variants
+          </p>
+          <div className="flex flex-wrap gap-3">
+            <Button variant="primary">Let's talk</Button>
+            <Button variant="secondary">Read more</Button>
+            <Button variant="ghost">Skip →</Button>
+            <Button variant="primary" disabled>
+              Disabled
+            </Button>
+          </div>
+          <p className="font-mono text-[10px] tracking-wide-16 uppercase text-paper opacity-40 mt-4 mb-3">
+            Buttons — sizes
+          </p>
+          <div className="flex flex-wrap items-center gap-3">
+            <Button size="sm">Small</Button>
+            <Button size="md">Medium</Button>
+            <Button size="lg">Large</Button>
+          </div>
+        </div>
+
+        {/* Form inputs */}
+        <div className="mb-8 max-w-md">
+          <p className="font-mono text-[10px] tracking-wide-16 uppercase text-paper opacity-40 mb-3">
+            Form fields
+          </p>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="preview-name">Name</Label>
+              <Input id="preview-name" placeholder="John Doe" />
+            </div>
+            <div>
+              <Label htmlFor="preview-email">Email</Label>
+              <Input id="preview-email" type="email" placeholder="you@company.com" />
+            </div>
+            <div>
+              <Label htmlFor="preview-source">How did you hear about us</Label>
+              <Select id="preview-source" defaultValue="">
+                <option value="" disabled>
+                  Select an option
+                </option>
+                <option value="referral">Referral</option>
+                <option value="search">Search engine</option>
+                <option value="event">Event / conference</option>
+                <option value="other">Other</option>
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="preview-msg">Tell us what you need</Label>
+              <Textarea
+                id="preview-msg"
+                placeholder="A few lines about the problem you want solved…"
+              />
+            </div>
+            <label htmlFor="preview-accept" className="flex items-start gap-3 cursor-pointer">
+              <Checkbox id="preview-accept" defaultChecked />
+              <span className="font-sans text-xs text-paper opacity-70">
+                I accept the privacy policy.
+              </span>
+            </label>
+            <div>
+              <Label htmlFor="preview-invalid">Field with error (aria-invalid)</Label>
+              <Input
+                id="preview-invalid"
+                aria-invalid="true"
+                placeholder="This field has a problem"
+              />
+              <p className="font-mono text-[10px] tracking-wide-12 uppercase text-flare mt-2">
+                Required field
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 

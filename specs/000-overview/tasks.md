@@ -742,3 +742,45 @@ A **6 horas/día focal** = **~2 semanas calendario**.
 - Mobile no overflows ✓ (flex `justify-between gap-4` + `max-w-7xl mx-auto`, h-14 fija)
 
 **Siguiente**: T6 — Componentes UI base shadcn-style (Button, Input, Textarea, Select, Checkbox, Label) adaptados a tokens Vizcaia.
+
+---
+
+### T6 — 2026-05-25 — ✅ Componentes UI base (Button, Input, Textarea, Select, Checkbox, Label)
+
+**Qué se hizo**:
+- Deps agregadas: `class-variance-authority@0.7.1`, `clsx@2.1.1`, `tailwind-merge@3.6.0`.
+- `src/lib/cn.ts`: helper `cn(...inputs)` que combina clsx + tailwind-merge (resuelve conflictos de Tailwind).
+- 6 componentes en `src/components/ui/`:
+  - **Button** (cva): 3 variants (`primary`, `secondary`, `ghost`) × 3 sizes (`sm`, `md`, `lg`). Tipografía mono uppercase tracking-wide-16. Focus ring signal offset 4px.
+  - **Input**: border 1px ink-3 sobre ink-2, hover border ink-4, focus border signal/40 + outline signal. `aria-invalid` activa border flare.
+  - **Textarea**: idem Input + min-h-32 + resize-y.
+  - **Select** (HTML nativo styled): caret custom inline SVG color paper, `appearance-none`, mismo focus que Input.
+  - **Checkbox**: HTML nativo con `accent-color: signal`.
+  - **Label**: mono uppercase tracking-wide-16, opacity-70, block mb-2.
+- Todos con `forwardRef`, `displayName`, props extendiendo HTML attributes (drop-in para forms).
+- Preview kitchen-sink agregado al `page.tsx` (sección "Componentes UI · T6").
+
+**Decisiones técnicas**:
+- **Tipografía de Button = mono uppercase + tracking-wide-16**. Es el sello visual del manual ("CTA labels"). Lo opuesto de los CTAs típicos de SaaS (sentence case + bold). Coherente con "honest, austere".
+- **Select HTML nativo en lugar de Radix**. Para v1 cualquier funcionalidad extra (search, typeahead, options custom) no aplica. Bundle ~30 kB menos. Si en form más adelante necesitamos Radix Select, migramos.
+- **Checkbox con `accent-color`**. Estándar Web moderno, soporta IE no relevante. Bundle 0 kB extra (vs Radix Checkbox).
+- **Aria-invalid styling automatic**: `aria-invalid:border-flare aria-invalid:focus-visible:outline-flare` en Input/Textarea/Select → cuando react-hook-form marque error, sin código adicional el campo cambia color.
+- **Suppressions**:
+  - `noLabelWithoutControl` en `Label.tsx`: es reusable, el consumer pasa `htmlFor`. Biome no puede inferir.
+
+**Verificación runtime**:
+- En `/en`: 4 inputs (3 text/email + 1 checkbox), 1 select, 1 textarea, 9 buttons (2 LanguageSwitcher + 7 preview), 6 labels.
+- Classes verificadas en HTML:
+  - Primary button: `bg-signal text-ink hover:bg-signal-2 h-10 px-5 text-xs`
+  - Secondary button: `border border-paper text-paper hover:bg-paper hover:text-ink`
+  - Ghost button: `text-signal hover:text-signal-2`
+  - Sizes: sm `h-8 px-3 text-[10px]`, md `h-10 px-5 text-xs`, lg `h-12 px-7 text-sm`
+  - Disabled: `disabled` attribute + `disabled:opacity-40 disabled:pointer-events-none`
+
+**Acceptance criteria**: 4/4 ✓
+- Button primary: bg-signal, text-ink, hover signal-2 ✓
+- Inputs: border ink-3 sobre ink-2, focus ring signal con offset 2px ✓
+- Todos navegables por teclado, focus visible claro (`focus-visible:outline-2 outline-offset-4 outline-signal`) ✓
+- Variantes coherentes con la voz austera del brand (mono uppercase, sin shadows, sin gradientes) ✓
+
+**Siguiente**: T7 — MarkSpark component refinement (favicon + apple-touch-icon + dynamic icon) + Footer (T8).
