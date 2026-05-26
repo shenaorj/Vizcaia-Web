@@ -827,3 +827,30 @@ A **6 horas/día focal** = **~2 semanas calendario**.
 - Responsive: 3 columnas desktop, stack mobile ✓ (`grid-cols-1 md:grid-cols-3`)
 
 **Siguiente**: Fase 3 — Hero canvas interactivo (T9 grid estática · T10 distorsión por mouse · T11 fallback mobile + lazy).
+
+---
+
+### T9 — 2026-05-25 — ✅ HeroCanvas básico (grid 2D estática)
+
+**Qué se hizo**:
+- `src/lib/canvas-grid.ts`: algoritmo puro Canvas 2D (separado de React para testabilidad y reuso en T10).
+  - `GRID_CONFIG`: cols=30, rows=20, lineColor `rgba(255,255,255,0.04)`, lineWidth=0.5.
+  - `drawStaticGrid(ctx, w, h)`: dibuja todas las líneas en un solo `beginPath()` + `stroke()` (más eficiente que stroke por línea).
+- `src/components/HeroCanvas.tsx` (client): canvas con `aria-hidden` + `tabIndex={-1}` (decorativo).
+  - `useEffect` setea tamaño, scale DPR, y dibuja.
+  - `ResizeObserver` re-dibuja al cambiar tamaño del contenedor.
+  - DPR awareness: `canvas.width = rect.width * devicePixelRatio` + `ctx.scale(dpr, dpr)`.
+- Preview agregado al page.tsx en sección "Hero canvas · T9 — estática" con altura fija 384 px sobre bg-ink-2 con borde rule-dark.
+
+**Decisiones técnicas**:
+- **Algoritmo en `lib/`, no en componente**: facilita testar `drawStaticGrid` sin DOM, y permite que T10 lo reuse + agregue capas (distorsión sin tocar el render base).
+- **Un solo `stroke()`**: en lugar de `beginPath()`/`stroke()` por línea, agrupamos todos los moveTo/lineTo en un path y un único stroke. 30+20=50 líneas → 1 GPU draw call.
+- **`tabIndex={-1}` además de `aria-hidden`**: Biome 2 rechaza `aria-hidden` sin tabIndex en `<canvas>` (puede ser focusable). El canvas es 100% decorativo.
+
+**Acceptance criteria**: 4/4 ✓
+- Canvas renderiza grid uniforme de líneas sobre fondo transparente ✓
+- Líneas color `rgba(255,255,255,0.04)` ✓ (GRID_CONFIG.lineColor)
+- Responsive con ResizeObserver ✓
+- DPR-aware (`canvas.width = rect.width * dpr`) ✓
+
+**Siguiente**: T10 — Mouse tracking + algoritmo de distorsión (gravity well + bezier curves).

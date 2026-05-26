@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import { HeroCanvas } from '@/components/HeroCanvas';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
@@ -96,6 +97,21 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           <p className="tracking-wide-12">tracking-wide-12</p>
           <p className="tracking-wide-16">tracking-wide-16</p>
           <p className="tracking-wide-18">tracking-wide-18</p>
+        </div>
+      </section>
+
+      {/* Hero Canvas — T9 (estática) */}
+      <section className="mb-16">
+        <h2 className="font-mono text-xs tracking-wide-16 uppercase text-paper opacity-50 mb-6">
+          Hero canvas · T9 — estática
+        </h2>
+        <div className="relative w-full h-96 bg-ink-2 border border-rule-dark rounded-sm overflow-hidden">
+          <HeroCanvas className="absolute inset-0 w-full h-full" />
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <p className="font-mono text-[11px] tracking-wide-16 uppercase text-paper opacity-30">
+              T9 · grid 30×20 · static · DPR-aware
+            </p>
+          </div>
         </div>
       </section>
 
