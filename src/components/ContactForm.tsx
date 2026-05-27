@@ -141,7 +141,7 @@ export function ContactForm({ locale, dict }: { locale: Locale; dict: FormDict }
       <div>
         <Label htmlFor="contact-company">
           {dict.company}{' '}
-          <span className="opacity-50 normal-case tracking-normal">({dict.sourceOptional})</span>
+          <span className="opacity-70 normal-case tracking-normal">({dict.sourceOptional})</span>
         </Label>
         <Input
           id="contact-company"
@@ -171,7 +171,7 @@ export function ContactForm({ locale, dict }: { locale: Locale; dict: FormDict }
       <div>
         <Label htmlFor="contact-source">
           {dict.source}{' '}
-          <span className="opacity-50 normal-case tracking-normal">({dict.sourceOptional})</span>
+          <span className="opacity-70 normal-case tracking-normal">({dict.sourceOptional})</span>
         </Label>
         <Select id="contact-source" defaultValue="" {...register('source')}>
           <option value="" disabled>

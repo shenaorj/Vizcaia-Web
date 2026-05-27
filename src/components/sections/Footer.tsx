@@ -29,14 +29,14 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
               <MarkSpark size={24} />
               <span className="font-display text-lg font-medium tracking-tight-2">vizcaia</span>
             </Link>
-            <p className="font-mono text-[10px] tracking-wide-16 uppercase opacity-50 mt-2">
+            <p className="font-mono text-[10px] tracking-wide-16 uppercase opacity-70 mt-2">
               {dict.footer.tagline}
             </p>
           </div>
 
           {/* Links column */}
           <div>
-            <p className="font-mono text-[10px] tracking-wide-16 uppercase text-paper opacity-40 mb-3">
+            <p className="font-mono text-[10px] tracking-wide-16 uppercase text-paper opacity-65 mb-3">
               {dict.footer.linksLabel}
             </p>
             <ul className="space-y-2 font-sans text-sm">
@@ -53,7 +53,7 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
 
           {/* Contact column */}
           <div>
-            <p className="font-mono text-[10px] tracking-wide-16 uppercase text-paper opacity-40 mb-3">
+            <p className="font-mono text-[10px] tracking-wide-16 uppercase text-paper opacity-65 mb-3">
               {dict.footer.contactLabel}
             </p>
             <ul className="space-y-2 font-sans text-sm">
@@ -70,10 +70,10 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
         </div>
 
         <div className="pt-8 border-t border-rule-dark flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-          <p className="font-mono text-[10px] tracking-wide-16 uppercase opacity-40">
+          <p className="font-mono text-[10px] tracking-wide-16 uppercase opacity-65">
             {dict.footer.copyright}
           </p>
-          <p className="font-mono text-[10px] tracking-wide-16 uppercase opacity-40">
+          <p className="font-mono text-[10px] tracking-wide-16 uppercase opacity-65">
             {dict.footer.location}
           </p>
         </div>
