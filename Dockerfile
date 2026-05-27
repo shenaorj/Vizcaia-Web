@@ -56,9 +56,11 @@ EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME=0.0.0.0
 
-# Healthcheck — Next.js standalone en CX23 puede tardar 60-90s en bindear al puerto
-# (cold start con disk I/O competida con Outline + Coolify). start-period generoso.
-HEALTHCHECK --interval=10s --timeout=5s --start-period=90s --retries=5 \
-    CMD wget --spider --quiet http://localhost:3000/ || exit 1
+# NOTA: HEALTHCHECK custom removido — Coolify default TCP check es más permisivo
+# y no depende de wget/curl en la imagen. Si necesitamos HEALTHCHECK custom en el
+# futuro, debe usar `127.0.0.1` explícito (no `localhost`) por bug de IPv6 vs IPv4
+# que afecta a Next.js standalone en algunas configs de Docker.
 
-CMD ["node", "server.js"]
+# Logging verboso del bind antes de arrancar — facilita debugging de "Ready in 0ms"
+CMD echo "[startup] HOSTNAME=$HOSTNAME PORT=$PORT NODE_ENV=$NODE_ENV" && \
+    node server.js
