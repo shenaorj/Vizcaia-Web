@@ -1232,3 +1232,140 @@ NEXT_PUBLIC_SITE_URL=https://vizcaia.com
 **Nota**: warning Node 20 deprecation aparece (deprecación de runner Node 20 por Node 24 en jun 2026). No bloqueante; actions/checkout@v4 + setup-node@v4 ya soportan Node 24 cuando GitHub lo defaultee.
 
 **Siguiente**: T25 — Deploy en Coolify + dominio + env vars.
+
+---
+
+### T25 — 2026-05-27 — ✅ Coolify deploy + envs + smoke test form
+
+**Qué se hizo**:
+- Deploy del commit `17e110b` via Coolify API (token "Claude operacional Vizcaia" con scope deploy).
+- Endpoint: `POST /api/v1/deploy?uuid=o5ky6rm1ma73t506t8hugrul&force=true`.
+- 7 env vars añadidos vía API: `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD` (same Gmail App Password que Outline), `OUTLINE_API_TOKEN`, `OUTLINE_LEADS_COLLECTION_ID`, `NEXT_PUBLIC_SITE_URL`.
+- Redeploy para que apliquen.
+
+**Bug crítico encontrado y arreglado (commit `17e110b`)**:
+- Next.js standalone bindea a `0.0.0.0:3000` (IPv4 only).
+- Alpine Linux resuelve `localhost` → `::1` (IPv6) primero → wget falla con "Connection refused".
+- Fix: `HEALTHCHECK` con `http://127.0.0.1:3000/` explícito IPv4.
+
+**Bug secundario encontrado y arreglado (commit `90f6153`)**:
+- Email del form llegaba a `vizcaia.technologies@gmail.com` (from==to) → Gmail oculta del Inbox, solo aparece en Sent.
+- Fix: `to=shenaorj@gmail.com, mateoc233@gmail.com` directo (no loopback). `CONTACT_RECIPIENTS` env var override-able.
+- Log explícito de `messageId` + `accepted` + `rejected` para diagnóstico futuro.
+
+**Verificación end-to-end**:
+- `https://vizcaia.com` → 307 → `/en` (middleware OK) ✓
+- `https://vizcaia.com/en` → 200, prerendered, 55.8 KB ✓
+- `https://vizcaia.com/es` → 200, prerendered ✓
+- TLS: Let's Encrypt R13, válido hasta 2026-08-25 ✓
+- HTTP/2 + HTTP/3 (h3 via Traefik) ✓
+- `POST /api/contact` → 200 `{ok:true}` ✓
+- Lead creado en Outline collection "Leads" ✓
+- SMTP messageId asignado, accepted=[shenaorj@gmail.com, mateoc233@gmail.com], rejected=[] ✓
+
+**Acceptance criteria T25**: 3/3 ✓
+- Sitio responde con HTTPS válido ✓
+- Form submit envía email + crea lead ✓
+- Healthcheck del container es green ✓
+
+**Siguiente**: T26 — Lighthouse audit.
+
+---
+
+### T26 — 2026-05-27 — ✅ Lighthouse audit todas las métricas
+
+**Qué se hizo**:
+- Run con `pnpm dlx lighthouse https://vizcaia.com/en --headless` (Chrome headless, mobile simulado).
+- 4 categorías evaluadas: Performance · A11y · Best Practices · SEO.
+
+**Resultados v1 (antes de fixes a11y)**:
+- /en: 93 / 96 / 100 / 100
+- /es: 94 / 96 / 100 / 100
+
+**Resultados finales (post-T27)**:
+- /en: **98 / 100 / 100 / 100**
+- /es: **99 / 100 / 100 / 100**
+- Core Web Vitals /en: FCP 1.4s · LCP 2.1s · TBT 20ms · CLS 0 · SI 3.0s.
+
+**Acceptance criteria T26**: 4/4 ✓
+- Performance > 90 ✓ (98/99)
+- Accessibility > 90 ✓ (100/100)
+- Best Practices > 90 ✓ (100/100)
+- SEO > 90 ✓ (100/100)
+
+**Siguiente**: T27 — A11y manual + axe.
+
+---
+
+### T27 — 2026-05-27 — ✅ A11y audit (WCAG 2.1 AA)
+
+**Qué se hizo**:
+- axe-core (vía Lighthouse) corrió contra ambos locales.
+- Encontradas **7 fallas de color-contrast** en v1: text `opacity-40/50` sobre fondo dark daba 2.94–3.52, requiere ≥4.5:1 para texto <18pt.
+
+**Fix (commits `3d2874c` + `5eebc00`)**:
+- `text-paper opacity-40` → `opacity-65` en: Footer, Work card footnote, privacy + aviso disclaimers.
+- `opacity-50` → `opacity-70` en: ContactForm "(optional)" spans, Footer tagline.
+- Mantiene jerarquía visual sutil pero pasa WCAG AA.
+
+**Verificación markup semántico**:
+- Landmarks: `<main>`, `<header>`, `<footer>`, `<nav>` ✓
+- Skip-link visible al `Tab` ✓
+- `<h1>` único en cada página ✓
+- `lang="en"` / `lang="es"` correcto ✓
+- 7/7 inputs con `<label for>` asociado ✓
+- Buttons con `type="submit"` o `type="button"` explícito ✓
+- `meta description`, `meta viewport`, `og:title`, JSON-LD Organization ✓
+
+**Resultado final**:
+- Lighthouse a11y /en: **100** ✓
+- Lighthouse a11y /es: **100** ✓
+- color-contrast failures: **0** ✓
+
+**Acceptance criteria T27**: 3/3 ✓
+- axe-core sin violations críticas ✓
+- WCAG 2.1 AA contrast ratio ≥4.5:1 ✓
+- Navegación por teclado funcional ✓
+
+**Siguiente**: T28 — Tag v1.0.0 + Outline STATE.
+
+---
+
+### T28 — 2026-05-27 — ✅ Tag v1.0.0 + Outline STATE
+
+**Qué se hizo**:
+- `git tag -a v1.0.0` con mensaje detallado (stack + métricas Lighthouse) + push a GitHub.
+- Tag visible en https://github.com/shenaorj/Vizcaia-Web/releases/tag/v1.0.0.
+- Doc "Estado de Vizcaia-Web" creado en Outline collection "Pagina Web Vizcaia":
+  - URL: https://outline.vizcaia.com/doc/estado-de-vizcaia-web-uCGusLOtW2
+  - Incluye: URLs producción, métricas Lighthouse, stack desplegado, decisiones clave, pendientes corto plazo, historial de deploys.
+
+**Smoke test final post-tag**:
+- `curl -I https://vizcaia.com` → 200 / 307 según ruta ✓
+- TLS válido ✓
+- Form `/api/contact` → 200 ✓
+- Lead en Outline ✓
+
+**Acceptance criteria T28**: 3/3 ✓
+- Tag v1.0.0 en GitHub ✓
+- Outline STATE doc publicado ✓
+- Smoke test end-to-end green ✓
+
+---
+
+## 🎉 v1.0.0 LIVE — 2026-05-27
+
+**Resumen del entregable v1**:
+- 24/28 tasks T1–T28 completados (T20 omitido por scope, T21 movido a backlog post-launch).
+- Sitio bilingüe EN/ES en https://vizcaia.com.
+- Lighthouse 98/100/100/100.
+- Form contacto operativo (email + lead Outline).
+- 27 commits en `main`, tag `v1.0.0`.
+- Imagen Docker 78 MB, deploy automatizable via Coolify API.
+
+**Backlog post-launch** (no v1.0):
+- Cloudflare Web Analytics token.
+- Google Workspace para `hello@vizcaia.com` real.
+- Revisión legal de privacy + aviso (hoy son v1 templates).
+- SPF/DKIM en Cloudflare DNS para mejorar deliverability.
+- Caso Quitebe completo cuando autoricen.
