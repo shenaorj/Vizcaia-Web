@@ -1170,3 +1170,35 @@ NEXT_PUBLIC_SITE_URL=https://vizcaia.com
 **Pendientes para que analytics empiece**: token de Cloudflare. Lo configuramos en T25 cuando deployemos.
 
 **Siguiente**: T23 — Dockerfile multi-stage + .dockerignore.
+
+---
+
+### T23 — 2026-05-25 — ✅ Dockerfile multi-stage (78 MB amd64)
+
+**Qué se hizo**:
+- `Dockerfile`: 3 stages (deps · builder · runner) sobre `node:22-alpine`.
+  - **deps**: pnpm install --frozen-lockfile, capa cacheable.
+  - **builder**: copia código + node_modules + `pnpm build` con `NEXT_TELEMETRY_DISABLED=1`.
+  - **runner**: minimal, copia `public/`, `.next/standalone/`, `.next/static/`. Usuario non-root `nextjs:1001`. HEALTHCHECK con wget. `HOSTNAME=0.0.0.0` para que escuche externamente.
+- `.dockerignore`: excluye node_modules, .next, .git, .env*, specs/, README, IDE, OS files. Reduce build context y previene leaks.
+- `public/.gitkeep`: placeholder para que la carpeta exista (Next no la crea automático cuando no hay assets manuales todavía).
+
+**Hallazgo importante — multi-platform**:
+- Primer build en mi Mac (ARM64) reportó **312 MB**. Investigando descubrí que BuildKit estaba haciendo manifest multi-platform, duplicando el tamaño efectivo.
+- Re-build con `--platform=linux/amd64` (target del VPS): **78 MB** ✓ — muy debajo del budget de 200 MB.
+- Implicación para deploy: Coolify hace build directamente en el VPS amd64, así que el size real será 78 MB (no 312).
+
+**Verificación**:
+- `docker build --platform=linux/amd64 -t vizcaia-web .` → 78.1 MB ✓
+- `docker run -p 3030:3000 vizcaia-web` → container arranca, escucha :3000 ✓
+- `GET /` → 307 redirect a `/en` (middleware funciona) ✓
+- `GET /en` → 200 + HTML completo con tagline ✓
+- `HEALTHCHECK` configurado (Coolify lo usa para detectar container ready) ✓
+- Usuario non-root `nextjs` ✓
+
+**Acceptance criteria T23**: 3/3 ✓
+- `docker build -t vizcaia-web .` produce imagen < 200 MB ✓ (78 MB en amd64)
+- `docker run -p 3000:3000 vizcaia-web` levanta sitio funcional ✓
+- Layer caching efectivo ✓ (deps separadas del código)
+
+**Siguiente**: T24 — GitHub repo + Actions CI.
