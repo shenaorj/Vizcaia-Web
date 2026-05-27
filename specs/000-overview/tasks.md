@@ -905,3 +905,45 @@ damping: 0.12       (qué tan reactivo — 0 = no animación, 1 = teletransport)
 **Pendientes T11**: lazy load con `next/dynamic({ ssr: false })` desde el Hero component (T12) + CSS fallback si JS falla.
 
 **Siguiente**: T11 — Fallback mobile + lazy load.
+
+---
+
+### T11 + T12 — 2026-05-25 — ✅ Hero completo (canvas + fallback + texto + CTA)
+
+**Qué se hizo**:
+- `src/components/sections/Hero.tsx` (server) — wrapper que combina:
+  1. CSS fallback grid: `<div>` con `background-image: linear-gradient(...)` inline. Funciona sin JS. Tamaño 80×80 px (mismo del manual de marca).
+  2. `<HeroCanvas>` cliente — montado encima del fallback. Como tiene `'use client'`, Next lo splittea automáticamente; SSR renderiza un `<canvas>` vacío, post-hydration `useEffect` arranca.
+  3. Contenido semántico server-rendered: eyebrow mono + h1 con `<em italic signal>` para "intelligence" + subtitle + CTA primary "Let's talk".
+- `src/components/ui/button.tsx`: agregado `ButtonLink` (anchor variant) reusando `buttonVariants`. Necesario porque el CTA es `<a href="#contact">`, no botón.
+- `src/app/globals.css`: `html { scroll-behavior: smooth }` para que el CTA haga scroll suave a `#contact`. Respeta `prefers-reduced-motion`.
+- `src/app/[locale]/page.tsx`: reemplazado hero placeholder por `<Hero dict={dict} />`. Previews de Paleta/Tipos/UI components agrupados dentro de un `<div>` con label "↓ Previews de desarrollo" (se eliminarán cuando lleguemos a T16 / ensamblado de home final).
+
+**Decisión técnica clave — sin `next/dynamic({ ssr: false })`**:
+- Originalmente puse `next/dynamic` para lazy load. **Falló en build**: Next 16 NO permite `ssr: false` en server components.
+- Solución: import directo. Como `HeroCanvas` ya tiene `'use client'`, Next:
+  - SSR renderiza el `<canvas>` shell vacío (no bloquea LCP — sale HTML listo).
+  - El bundle del componente + lib/canvas-grid viaja en chunk client separado.
+  - `useEffect` corre solo post-hydration → el algoritmo no se ejecuta en server.
+- Mismo resultado funcional que dynamic, con código más simple. Pierdo el "skeleton intermedio" pero el canvas vacío + fallback CSS cumplen ese rol.
+
+**Verificación runtime**:
+- `/en`: eyebrow EN, h1 "A foundry for intelligence" (em italic signal), subtitle EN, CTA "Let's talk →" con href="#contact"
+- `/es`: misma estructura, subtitle ES "Construimos AI agents y automatizaciones que llegan a producción. No demos."
+- **Tagline NO se traduce**: "A foundry for intelligence" queda en EN siempre (brand asset, decisión del spec).
+- `<canvas>` server-rendered con aria-hidden + tabIndex=-1.
+- CSS fallback grid visible vía `style="background-image:linear-gradient(...);background-size:80px 80px"`.
+
+**Acceptance criteria T11**: 4/4 ✓
+- Mobile/touch: canvas estática sin loop ✓ (staticMode en HeroCanvas)
+- prefers-reduced-motion: estática ✓
+- Canvas no bloquea LCP ✓ (client-only useEffect)
+- Si JS falla, hero sigue con tagline+CTA+CSS grid ✓
+
+**Acceptance criteria T12**: 4/4 ✓
+- HeroCanvas atrás, contenido semántico delante ✓ (z-index implícito por DOM order + `relative z-10` en content)
+- Above-the-fold completo sin scroll ✓ (`min-h-[calc(100vh-3.5rem)]` = viewport - header)
+- CTA hace smooth scroll al form ✓ (anchor href="#contact" + `html scroll-behavior: smooth`)
+- Texto legible sobre el canvas ✓ (paper sobre ink-2, signal en em)
+
+**Siguiente**: T13 — Section Manifesto + Section Services (3 tarjetas de servicios).

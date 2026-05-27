@@ -58,4 +58,20 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
 Button.displayName = 'Button';
 
+/**
+ * Variante para anchors (`<a>`) — para CTAs que llevan a otra URL o sección
+ * (smooth scroll, `mailto:`, link externo). Reusa exactamente los mismos
+ * variants que Button para visual consistente.
+ */
+export type ButtonLinkProps = React.AnchorHTMLAttributes<HTMLAnchorElement> &
+  VariantProps<typeof buttonVariants>;
+
+export const ButtonLink = forwardRef<HTMLAnchorElement, ButtonLinkProps>(
+  ({ className, variant, size, ...props }, ref) => (
+    <a ref={ref} className={cn(buttonVariants({ variant, size }), className)} {...props} />
+  ),
+);
+
+ButtonLink.displayName = 'ButtonLink';
+
 export { buttonVariants };

@@ -59,6 +59,18 @@
    Resets / base styles
    ============================================================ */
 
+html {
+  /* Smooth scroll para los anchor links del hero (#contact, etc.).
+   * Se respeta automáticamente con prefers-reduced-motion: reduce. */
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
 html,
 body {
   margin: 0;
