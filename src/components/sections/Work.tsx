@@ -45,7 +45,7 @@ export function Work({ dict }: { dict: Dictionary }) {
             ))}
           </div>
 
-          <p className="font-mono text-[11px] tracking-wide-12 uppercase text-paper opacity-40 pt-4 border-t border-rule-dark">
+          <p className="font-mono text-[11px] tracking-wide-12 uppercase text-paper opacity-65 pt-4 border-t border-rule-dark">
             {dict.work.footnote}
           </p>
         </article>

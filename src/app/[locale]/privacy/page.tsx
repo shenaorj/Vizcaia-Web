@@ -187,7 +187,7 @@ export default async function PrivacyPage({ params }: { params: Promise<{ locale
         </p>
       </Section>
 
-      <p className="mt-16 pt-8 border-t border-rule-dark font-mono text-[10px] tracking-wide-16 uppercase text-paper opacity-40">
+      <p className="mt-16 pt-8 border-t border-rule-dark font-mono text-[10px] tracking-wide-16 uppercase text-paper opacity-65">
         This is a v1 template. We will update it after review by qualified counsel before formal
         commercial outreach.
       </p>

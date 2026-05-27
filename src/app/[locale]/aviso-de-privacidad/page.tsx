@@ -196,7 +196,7 @@ export default async function AvisoPrivacidadPage({
         </p>
       </Section>
 
-      <p className="mt-16 pt-8 border-t border-rule-dark font-mono text-[10px] tracking-wide-16 uppercase text-paper opacity-40">
+      <p className="mt-16 pt-8 border-t border-rule-dark font-mono text-[10px] tracking-wide-16 uppercase text-paper opacity-65">
         Esta es una plantilla v1. La actualizaremos tras revisión legal calificada antes de outreach
         comercial formal.
       </p>
