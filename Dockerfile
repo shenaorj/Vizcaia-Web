@@ -56,8 +56,9 @@ EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME=0.0.0.0
 
-# Healthcheck simple — Coolify lo usa para detectar container ready
-HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
+# Healthcheck — Next.js standalone en CX23 puede tardar 60-90s en bindear al puerto
+# (cold start con disk I/O competida con Outline + Coolify). start-period generoso.
+HEALTHCHECK --interval=10s --timeout=5s --start-period=90s --retries=5 \
     CMD wget --spider --quiet http://localhost:3000/ || exit 1
 
 CMD ["node", "server.js"]
