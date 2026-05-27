@@ -1126,3 +1126,47 @@ NEXT_PUBLIC_SITE_URL=https://vizcaia.com
 - Configurar `privacy@vizcaia.com` y `privacidad@vizcaia.com` como aliases en Google Workspace cuando se compre.
 
 **Siguiente**: T21 — Metadata + sitemap + robots + OG image dinámica.
+
+---
+
+### T21 + T22 — 2026-05-25 — ✅ SEO assets + Analytics modular
+
+**T21 — Metadata + sitemap + robots + OG image + Schema.org**:
+- `src/app/sitemap.ts`: dinámico, lista `/en` y `/es` con `alternates.languages` (hreflang). Privacy pages excluidas (están `noindex`).
+- `src/app/robots.ts`: `User-Agent: *`, `Allow: /`, `Disallow: /api/`, link al sitemap, `Host: BASE_URL`.
+- `src/app/opengraph-image.tsx`: PNG dinámico 1200×630 generado con `next/og`. Composición: fondo ink + grid sutil + Mark Spark verde grande + tagline "A foundry for intelligence." + subtitle + URL. Cache automático por Next.
+- `src/app/layout.tsx`: agregado JSON-LD Schema.org Organization (name, url, logo, slogan, foundingDate, address Casanare/CO, contactPoint sales).
+
+**T22 — Cloudflare Web Analytics (modular)**:
+- `src/components/CloudflareAnalytics.tsx`: renderea el beacon ÚNICAMENTE cuando hay `NEXT_PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN` Y `NODE_ENV === 'production'`. Sin token, return null.
+- Wireado en `app/layout.tsx` al final del `<body>` (no bloquea LCP).
+- `.env.local.example` actualizado con la variable.
+- Cookie-less por diseño — no necesita banner de consentimiento.
+
+**Cómo activar Analytics post-deploy**:
+1. https://dash.cloudflare.com → Web Analytics → Add a site → `vizcaia.com`.
+2. Cloudflare genera un beacon snippet con `data-cf-beacon='{"token":"xxxx"}'`.
+3. Extraer el `token` y agregar a Coolify Env Vars como `NEXT_PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN`.
+4. Redeploy → analytics empieza a recibir pageviews.
+
+**Verificación runtime**:
+- `/sitemap.xml` → 200, XML válido con hreflang ✓
+- `/robots.txt` → 200 con `Disallow: /api/` + sitemap link ✓
+- `/opengraph-image` → 200 image/png ✓
+- `<meta property="og:image">` apunta al endpoint dinámico ✓
+- `<script type="application/ld+json">` con Organization schema ✓
+
+**Acceptance criteria T21**: 4/4 ✓
+- sitemap.xml lista ambas URLs con hreflang ✓
+- robots.txt permite todo + sitemap ✓
+- OG image dinámica (no PNG estático) ✓
+- Schema.org Organization JSON-LD ✓
+
+**Acceptance criteria T22**: 3/3 ✓
+- Script presente solo en prod ✓ (gate `isProd && token`)
+- Ausente en dev ✓
+- Sin cookies set por el script ✓ (Cloudflare Analytics es cookieless)
+
+**Pendientes para que analytics empiece**: token de Cloudflare. Lo configuramos en T25 cuando deployemos.
+
+**Siguiente**: T23 — Dockerfile multi-stage + .dockerignore.
