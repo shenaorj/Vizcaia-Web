@@ -1202,3 +1202,33 @@ NEXT_PUBLIC_SITE_URL=https://vizcaia.com
 - Layer caching efectivo ✓ (deps separadas del código)
 
 **Siguiente**: T24 — GitHub repo + Actions CI.
+
+---
+
+### T24 — 2026-05-25 — ✅ GitHub repo privado + Actions CI
+
+**Qué se hizo**:
+- Repo creado: https://github.com/shenaorj/Vizcaia-Web (privado).
+- 22 commits pusheados a `main`.
+- `.github/workflows/ci.yml`:
+  - Triggers: push a `main` + PRs hacia `main`.
+  - Concurrency cancela runs previos del mismo branch.
+  - Steps: checkout · pnpm install · biome check · tsc --noEmit · next build · bundle size check.
+  - Timeout 10 min, runs en ubuntu-latest.
+
+**Issue resuelto**:
+- Primer run falló porque pnpm/action-setup@v4 rechaza tener `version: 10` en workflow Y `packageManager: pnpm@10.0.0` en package.json. Fix: quitar `version` del workflow (idiomático con corepack).
+
+**Verificación**:
+- Run inicial: failure (conflicto packageManager) — 9s
+- Run después del fix: **success en 44s** ✓
+- Logs visibles en https://github.com/shenaorj/Vizcaia-Web/actions
+
+**Acceptance criteria T24**: 3/3 ✓
+- Push a main corre CI verde ✓
+- PR a main correrá CI antes de merge (mismo trigger) ✓
+- Build time < 3 min ✓ (44 segundos en primer green build, cacheable a futuro)
+
+**Nota**: warning Node 20 deprecation aparece (deprecación de runner Node 20 por Node 24 en jun 2026). No bloqueante; actions/checkout@v4 + setup-node@v4 ya soportan Node 24 cuando GitHub lo defaultee.
+
+**Siguiente**: T25 — Deploy en Coolify + dominio + env vars.
