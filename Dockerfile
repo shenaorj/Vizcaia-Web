@@ -56,11 +56,16 @@ EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME=0.0.0.0
 
-# NOTA: HEALTHCHECK custom removido — Coolify default TCP check es más permisivo
-# y no depende de wget/curl en la imagen. Si necesitamos HEALTHCHECK custom en el
-# futuro, debe usar `127.0.0.1` explícito (no `localhost`) por bug de IPv6 vs IPv4
-# que afecta a Next.js standalone en algunas configs de Docker.
+# HEALTHCHECK con 127.0.0.1 explícito (NO `localhost`).
+#
+# Bug detectado en deploy a Coolify: Next.js standalone bindea a 0.0.0.0:3000 (IPv4 only).
+# Alpine resuelve `localhost` → `::1` (IPv6) primero → connection refused.
+# `127.0.0.1` fuerza IPv4 y wget conecta correctamente.
+#
+# start-period 90s tolera cold start en CX23 compartido con Outline+Coolify+Postgres.
+HEALTHCHECK --interval=10s --timeout=5s --start-period=90s --retries=5 \
+    CMD wget --spider --quiet http://127.0.0.1:3000/ || exit 1
 
-# Logging verboso del bind antes de arrancar — facilita debugging de "Ready in 0ms"
+# Startup logging para diagnostico futuro
 CMD echo "[startup] HOSTNAME=$HOSTNAME PORT=$PORT NODE_ENV=$NODE_ENV" && \
     node server.js
