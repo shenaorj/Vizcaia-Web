@@ -1087,3 +1087,42 @@ NEXT_PUBLIC_SITE_URL=https://vizcaia.com
 ```
 
 **Siguiente**: T20 — Privacy policies (EN + ES con plantillas).
+
+---
+
+### T20 — 2026-05-25 — ✅ Privacy policies EN + ES (plantillas v1, noindex)
+
+**Qué se hizo**:
+- `src/app/[locale]/privacy/page.tsx`: política EN (CCPA + GDPR-friendly), válida solo en `/en/privacy`. `notFound()` si locale=es.
+- `src/app/[locale]/aviso-de-privacidad/page.tsx`: política ES (Habeas Data Colombia, Ley 1581 de 2012), válida solo en `/es/aviso-de-privacidad`. `notFound()` si locale=en.
+- Ambas con 11 secciones legales mínimas: identidad, datos recolectados, finalidad, retención, ubicación, derechos, cómo ejercerlos, seguridad, menores, cambios, contacto.
+- `metadata.robots.index = false` en ambas → `<meta name="robots" content="noindex, follow">`.
+- Footer del global layout linkea correcto: `/en/privacy` desde EN, `/es/aviso-de-privacidad` desde ES (mapeo ya existía en `Footer.tsx`).
+
+**Contenido**:
+- Contacto: `privacy@vizcaia.com` (EN) / `privacidad@vizcaia.com` (ES) — alias del corp, pendiente Google Workspace.
+- Retención: 12 meses leads activos / 24 meses leads cerrados.
+- Storage explícitamente declarado: Hetzner Alemania (transferencia internacional desde Colombia).
+- Cookies: explícito que NO usamos tracking; Cloudflare Web Analytics es cookieless.
+- Disclaimer al final: "v1 template, será actualizado tras revisión legal calificada antes de outreach comercial".
+
+**Verificación runtime**:
+- `/en/privacy` → 200 ✓
+- `/es/aviso-de-privacidad` → 200 ✓
+- `/en/aviso-de-privacidad` → 404 ✓ (notFound trigger)
+- `/es/privacy` → 404 ✓
+- `<meta name="robots" content="noindex, follow">` presente en ambas ✓
+- Footer link correcto por locale ✓
+
+**Acceptance criteria T20**: 4/4 ✓
+- `/en/privacy` muestra política inglés con menciones CCPA + GDPR ✓
+- `/es/aviso-de-privacidad` muestra política español con Habeas Data Colombia ✓
+- Footer linkea correctamente según locale ✓
+- Marcadas `noindex` por ahora ✓
+
+**Pendiente** (post-launch, antes de outreach formal):
+- Revisión legal por abogado USA (CCPA + GDPR específicos).
+- Revisión legal por abogado colombiano (Habeas Data + decreto 1377).
+- Configurar `privacy@vizcaia.com` y `privacidad@vizcaia.com` como aliases en Google Workspace cuando se compre.
+
+**Siguiente**: T21 — Metadata + sitemap + robots + OG image dinámica.
