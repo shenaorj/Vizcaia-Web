@@ -947,3 +947,74 @@ damping: 0.12       (qué tan reactivo — 0 = no animación, 1 = teletransport)
 - Texto legible sobre el canvas ✓ (paper sobre ink-2, signal en em)
 
 **Siguiente**: T13 — Section Manifesto + Section Services (3 tarjetas de servicios).
+
+---
+
+### T13 + T14 + T15 + T16 — 2026-05-25 — ✅ Fase 4 completa: Manifesto + Services + Principles + Work + Contact + home ensamblada
+
+**Qué se hizo (todas las secciones de la home v1)**:
+
+**T13** — `src/components/sections/Manifesto.tsx`:
+- Header pattern del brand manual: `Section / 01` mono + título display grande con tracking-tight-3.
+- 3 párrafos del dict, primero más prominente, los siguientes opacity-70 para jerarquía.
+- Patrón "iron coast of northern Spain" heredado del spec organizacional.
+
+**T13** — `src/components/sections/Services.tsx`:
+- 3 tarjetas en grid (1 col mobile, 3 cols md+).
+- Cada card: número signal mono, título display, lead, body separado con border-t.
+- Hover: border cambia a signal/40 (sutil signal cue).
+
+**T14** — `src/components/sections/Principles.tsx`:
+- 4 principios "01-04" en grid 2×2 md, 1×4 xl.
+- Patrón mono number + display title + sans body.
+- "Specs before code · Production from day 1 · Honest about limits · Living documentation".
+
+**T14** — `src/components/sections/Work.tsx`:
+- Card grande con Quitebe sin nombrar (palm oil estate, 1000+ hectáreas).
+- Tags `Backend / Mobile / BI` con borde signal/40.
+- Footnote "Client name withheld by request" en mono.
+
+**T15** — `src/components/sections/Contact.tsx`:
+- `id="contact"` + `scroll-mt-20` para que el CTA del Hero scrollee con offset (no tapa header).
+- Header pattern Section 05.
+- v1 con form skeleton + email mailto fallback. T17 reemplaza el skeleton con `<ContactForm>` real.
+
+**T16** — `src/app/[locale]/page.tsx`:
+- Reescrito limpio: solo importa las 6 secciones + las compone.
+- Previews UI de desarrollo ELIMINADOS — el sitio público ya no tiene contenido interno.
+- 6 secciones en orden: Hero → Manifesto → Services → Principles → Work → Contact.
+
+**Verificación runtime**:
+- HTML de `/en`: 45.7 kB (muy debajo del budget < 100 kB).
+- Las 6 secciones detectadas en orden correcto.
+- `id="contact"` presente.
+- 0 occurrences de "Previews de desarrollo" — preview interno removido.
+
+**Strings agregados a messages/{en,es}.json**:
+- `manifesto.{eyebrow, title, paragraphs[]}`
+- `services.{eyebrow, title, items[3]{number, title, lead, body}}`
+- `principles.{eyebrow, title, items[4]{number, title, body}}`
+- `work.{eyebrow, title, lead, tags[3], footnote}`
+- `contact.{eyebrow, title, lead, formPlaceholder}`
+
+**Acceptance criteria T13**: 3/3 ✓
+- Manifiesto: 3 párrafos, primer prominente, max-w controlled ✓
+- Services: 3 cards en grid responsive, sin precios, CTA implícito en Hero ✓
+- Sin imagen del producto ✓
+
+**Acceptance criteria T14**: 3/3 ✓
+- Principles: 4 numerados con mono number + display title ✓
+- Work: caja con descripción + tags + footnote, sin imágenes ✓
+- Cliente NO nombrado (Quitebe oculto, autorización pendiente) ✓
+
+**Acceptance criteria T15**: 3/3 ✓
+- Section con anchor `#contact` para smooth scroll desde Hero ✓
+- Layout completo (skeleton del form para reemplazar en T17) ✓
+- Footer va inmediatamente después de Contact (vía LocaleShell) ✓
+
+**Acceptance criteria T16**: 3/3 ✓
+- /en y /es muestran toda la home (6 secciones + Footer) ✓
+- Scroll fluido entre secciones (html scroll-behavior:smooth) ✓
+- CLS bajo (no layout shifts esperados — todo bg/borders sin imágenes diferidas) ✓
+
+**Siguiente**: T17 — ContactForm component (frontend con RHF + Zod).

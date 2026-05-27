@@ -23,5 +23,77 @@
     "contactLabel": "Contact",
     "copyright": "© 2026 Vizcaia Technologies",
     "location": "Headquartered in Casanare, Colombia · Serving global"
+  },
+  "manifesto": {
+    "eyebrow": "Manifesto",
+    "title": "We build the foundry, not just the tools.",
+    "paragraphs": [
+      "Vizcaia builds AI agents and automations for enterprise. We are not a consultancy that hands over a deck — we ship systems that run in production.",
+      "The name comes from the iron coast of northern Spain — a region that turned raw ore into the structures of the modern world. We do the same with raw signal: signal becomes structured intelligence; structured intelligence becomes labor; labor becomes leverage.",
+      "Our customers don't buy software. They buy the difference between what was possible yesterday and what becomes inevitable tomorrow."
+    ]
+  },
+  "services": {
+    "eyebrow": "What we do",
+    "title": "Three ways we work.",
+    "items": [
+      {
+        "number": "01",
+        "title": "AI-integrated apps",
+        "lead": "Production-ready apps with AI embedded — agents, chatbots, internal automations.",
+        "body": "From spec to deployment. We ship systems that actually run in front of real users. Not demos."
+      },
+      {
+        "number": "02",
+        "title": "Vertical operating systems",
+        "lead": "Industry-specific operating systems — the Quitebe pattern, transplanted to your domain.",
+        "body": "Backend + mobile + admin + BI, designed around how your operation actually works on the ground."
+      },
+      {
+        "number": "03",
+        "title": "AI architecture consulting",
+        "lead": "Second opinion for teams that already have AI in production but doubt their stack.",
+        "body": "Honest technical assessment, concrete recommendations, optional implementation if you want us to run it."
+      }
+    ]
+  },
+  "principles": {
+    "eyebrow": "How we work",
+    "title": "Discipline, not vibes.",
+    "items": [
+      {
+        "number": "01",
+        "title": "Specs before code",
+        "body": "No mid-project surprises. We write down what we are going to build and why, before touching the editor."
+      },
+      {
+        "number": "02",
+        "title": "Production from day 1",
+        "body": "Demos prove ideas. Production proves systems. We optimize for the second from the first commit."
+      },
+      {
+        "number": "03",
+        "title": "Honest about limits",
+        "body": "We tell you what the model can do, what it cannot, and where it will fail. No magic words."
+      },
+      {
+        "number": "04",
+        "title": "Living documentation",
+        "body": "We hand off the operating manual, not just the code. Your team owns what we built after we leave."
+      }
+    ]
+  },
+  "work": {
+    "eyebrow": "Past work",
+    "title": "Built in production.",
+    "lead": "Production-scale agricultural operations system covering 1,000+ hectares of palm oil estate. Backend, mobile, admin, BI dashboards — replaced a legacy spreadsheet stack and now runs the day-to-day for field crews and supervisors.",
+    "tags": ["Backend", "Mobile", "BI"],
+    "footnote": "Client name withheld by request. References available on request."
+  },
+  "contact": {
+    "eyebrow": "Contact",
+    "title": "Let's talk.",
+    "lead": "Tell us about your project, your team, your constraints. We respond within 24 business hours.",
+    "formPlaceholder": "Form coming in T17."
   }
 }
