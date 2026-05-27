@@ -94,6 +94,42 @@
     "eyebrow": "Contacto",
     "title": "Hablemos.",
     "lead": "Cuéntanos sobre tu proyecto, tu equipo, tus restricciones. Respondemos en menos de 24 horas hábiles.",
-    "formPlaceholder": "Formulario disponible en T17."
+    "form": {
+      "name": "Nombre",
+      "namePlaceholder": "Tu nombre",
+      "email": "Email",
+      "emailPlaceholder": "tu@empresa.com",
+      "company": "Empresa",
+      "companyPlaceholder": "Opcional",
+      "message": "Cuéntanos qué necesitas",
+      "messagePlaceholder": "Un par de líneas sobre el problema que quieres resolver…",
+      "source": "Cómo nos conociste",
+      "sourceOptional": "Opcional",
+      "sourceOptions": {
+        "placeholder": "Selecciona una opción",
+        "referral": "Referido",
+        "search": "Búsqueda en internet",
+        "event": "Evento / conferencia",
+        "other": "Otro"
+      },
+      "privacy": "Acepto el",
+      "privacyLink": "aviso de privacidad",
+      "submit": "Enviar mensaje",
+      "submitting": "Enviando…",
+      "successTitle": "Gracias — respondemos en menos de 24h.",
+      "successBody": "Recibimos tu mensaje. Te escribimos al correo que indicaste.",
+      "successReset": "Enviar otro",
+      "errorTitle": "Algo salió mal.",
+      "errorBody": "Inténtalo de nuevo, o escríbenos directamente a",
+      "errors": {
+        "required": "Este campo es requerido",
+        "minLength": "Muy corto",
+        "maxLength": "Demasiado largo",
+        "email": "Email inválido",
+        "mustAccept": "Debes aceptar el aviso de privacidad",
+        "rateLimited": "Demasiados envíos. Intenta en una hora.",
+        "server": "Error del servidor. Inténtalo o escríbenos."
+      }
+    }
   }
 }

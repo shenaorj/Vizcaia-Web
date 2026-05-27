@@ -30,7 +30,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       <Services dict={dict} />
       <Principles dict={dict} />
       <Work dict={dict} />
-      <Contact dict={dict} />
+      <Contact locale={locale} dict={dict} />
     </main>
   );
 }

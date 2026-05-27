@@ -94,6 +94,42 @@
     "eyebrow": "Contact",
     "title": "Let's talk.",
     "lead": "Tell us about your project, your team, your constraints. We respond within 24 business hours.",
-    "formPlaceholder": "Form coming in T17."
+    "form": {
+      "name": "Name",
+      "namePlaceholder": "Your name",
+      "email": "Email",
+      "emailPlaceholder": "you@company.com",
+      "company": "Company",
+      "companyPlaceholder": "Optional",
+      "message": "Tell us what you need",
+      "messagePlaceholder": "A few lines about the problem you want solved…",
+      "source": "How did you hear about us",
+      "sourceOptional": "Optional",
+      "sourceOptions": {
+        "placeholder": "Select an option",
+        "referral": "Referral",
+        "search": "Search engine",
+        "event": "Event / conference",
+        "other": "Other"
+      },
+      "privacy": "I accept the",
+      "privacyLink": "privacy policy",
+      "submit": "Send message",
+      "submitting": "Sending…",
+      "successTitle": "Thanks — we'll respond within 24 hours.",
+      "successBody": "We received your message. Expect a reply at the email you provided.",
+      "successReset": "Send another",
+      "errorTitle": "Something went wrong.",
+      "errorBody": "Please try again, or email us directly at",
+      "errors": {
+        "required": "This field is required",
+        "minLength": "Too short",
+        "maxLength": "Too long",
+        "email": "Not a valid email",
+        "mustAccept": "You must accept the privacy policy",
+        "rateLimited": "Too many submissions. Try again in an hour.",
+        "server": "Server error. Please try again or email us."
+      }
+    }
   }
 }

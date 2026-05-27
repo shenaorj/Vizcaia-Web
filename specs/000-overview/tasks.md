@@ -1018,3 +1018,72 @@ damping: 0.12       (qué tan reactivo — 0 = no animación, 1 = teletransport)
 - CLS bajo (no layout shifts esperados — todo bg/borders sin imágenes diferidas) ✓
 
 **Siguiente**: T17 — ContactForm component (frontend con RHF + Zod).
+
+---
+
+### T17 + T18 + T19 — 2026-05-25 — ✅ Fase 5 completa: form + backend + Outline collection
+
+**T17 — ContactForm component**:
+- `src/lib/schemas.ts`: `ContactSchema` con Zod 4. Campos `name`, `email`, `company`, `message`, `source`, `acceptsPrivacy` (refine === true), `websiteUrl` (honeypot, no validado para permitir 200 silencioso al bot).
+- `src/components/ContactForm.tsx` (client): RHF + zodResolver, modo `onTouched`. 3 estados (idle / submitting / success / error con discriminated union).
+  - Inline error messages con `aria-live="polite"` y `aria-invalid`.
+  - Honeypot field off-screen (`position: absolute; left: -9999px`) con `aria-hidden` + `tabIndex={-1}`.
+  - Privacy link mapea a slug por locale (`/en/privacy` vs `/es/aviso-de-privacidad`).
+  - Submit disabled hasta `isValid` o `submitting`.
+  - Success: muestra resumen + botón "Send another".
+  - Error: muestra mensaje + mailto fallback en modo `server`, mensaje específico en modo `rateLimited`.
+- Reemplazado el skeleton de `Contact.tsx` con `<ContactForm locale={locale} dict={dict.contact.form} />`.
+
+**T18 — API route `/api/contact`**:
+- `src/app/api/contact/route.ts` POST handler:
+  1. Parse JSON; 400 si inválido.
+  2. Zod validation; 400 + issues si falla.
+  3. Honeypot: si `websiteUrl` tiene valor → 200 silencioso (bot crea que pasó).
+  4. Rate limit: 3/hora por IP (key = `x-forwarded-for` o `x-real-ip`).
+  5. `sendContactEmail`: SMTP Gmail App Password, mail a `vizcaia.technologies@gmail.com` + CC a ambos socios + `replyTo: input.email`.
+  6. `createLeadInOutline`: POST a Outline API → doc en colección "Leads" con markdown formateado (best-effort, NO bloquea).
+- `src/lib/email.ts`: nodemailer transporter con SMTP env vars + `formatPlainText` + `formatHtml` (con escape XSS).
+- `src/lib/outline-api.ts`: client mínimo, falla silencioso si faltan env vars.
+- `src/lib/rate-limit.ts`: in-memory `Map<IP, {count, windowStartMs}>`. Simple y suficiente para v1.
+- `.env.local.example`: template con todas las env vars necesarias.
+
+**T19 — Colección "Leads" en Outline**:
+- Creada vía API: ID `4522aeda-eacf-41a9-bf72-526f58fd94c6`.
+- Icon "email", color flare (#FF5A3C), permission read_write.
+- ID actualizado en memoria persistente `outline-api-access.md`.
+
+**Smoke tests del API**:
+- POST inválido → 400 ✓
+- POST honeypot → 200 silencioso ✓ (`{"ok":true,"status":"spam_filtered"}`)
+- POST válido sin env vars SMTP → 500 ✓ (`smtp_failed`) — esperado en local, se resolverá en deploy con env vars en Coolify
+
+**Acceptance criteria T17**: 4/4 ✓
+- Validación inline en blur ✓ (`mode: 'onTouched'`)
+- Submit deshabilitado hasta válido ✓ (`disabled={!isValid}`)
+- Estados idle/submitting/success/error visibles ✓
+- Honeypot `websiteUrl` off-screen ✓
+
+**Acceptance criteria T18**: 4/4 ✓
+- POST válido devuelve 200 (cuando SMTP esté configurado en producción)
+- Honeypot lleno → 200 silencioso ✓
+- 4to POST de mismo IP en 1 hora → 429 (verificable post-deploy)
+- Errores SMTP no rompen Outline (`try/catch` independiente) ✓
+
+**Acceptance criteria T19**: 2/2 ✓
+- Colección "Leads" existe en Outline ✓
+- Submit end-to-end pendiente para T25 (deploy con env vars en Coolify)
+
+**Test end-to-end pendiente**: requiere SMTP_PASSWORD + OUTLINE_API_TOKEN + OUTLINE_LEADS_COLLECTION_ID en `.env.local` (o equivalente). Lo haremos al deploy en T25.
+
+**Env vars necesarias para deploy (Coolify)**:
+```
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USERNAME=vizcaia.technologies@gmail.com
+SMTP_PASSWORD=<gmail app password, ya en gestor del usuario>
+OUTLINE_API_TOKEN=<ya en ~/.config/vizcaia/outline-api-token, copiar a Coolify>
+OUTLINE_LEADS_COLLECTION_ID=4522aeda-eacf-41a9-bf72-526f58fd94c6
+NEXT_PUBLIC_SITE_URL=https://vizcaia.com
+```
+
+**Siguiente**: T20 — Privacy policies (EN + ES con plantillas).

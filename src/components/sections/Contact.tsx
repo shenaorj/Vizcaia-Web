@@ -1,14 +1,15 @@
+import { ContactForm } from '@/components/ContactForm';
 import type { Dictionary } from '@/lib/dictionaries';
+import type { Locale } from '@/lib/i18n';
 
 /**
  * Section Contact — destino del CTA del hero (`#contact`).
- *
- * v1 (T15): layout solo — título + descripción + skeleton donde va el form.
- * v1.1 (T17): se reemplaza el skeleton con `<ContactForm>` (RHF + Zod + API).
+ * T17: el skeleton se reemplaza con `<ContactForm>` (RHF + Zod, POST a /api/contact).
+ * Backend en T18.
  *
  * `id="contact"` es el anchor para smooth scroll desde el botón "Let's talk".
  */
-export function Contact({ dict }: { dict: Dictionary }) {
+export function Contact({ locale, dict }: { locale: Locale; dict: Dictionary }) {
   return (
     <section
       id="contact"
@@ -37,22 +38,9 @@ export function Contact({ dict }: { dict: Dictionary }) {
           </div>
         </div>
 
-        {/* Skeleton del form — T17 reemplaza este bloque con <ContactForm /> */}
+        {/* ContactForm — T17 (frontend con RHF + Zod). Backend en T18. */}
         <div className="md:ml-[132px] max-w-xl">
-          <div className="bg-ink-2 border border-dashed border-rule-dark rounded-sm p-10 text-center">
-            <p className="font-mono text-xs tracking-wide-16 uppercase text-paper opacity-40">
-              {dict.contact.formPlaceholder}
-            </p>
-            <p className="mt-4 font-sans text-sm text-paper opacity-50">
-              {/* email mailto link como fallback hasta que el form esté listo */}
-              <a
-                href="mailto:hello@vizcaia.com?subject=Project%20inquiry"
-                className="text-signal hover:text-signal-2 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal"
-              >
-                hello@vizcaia.com
-              </a>
-            </p>
-          </div>
+          <ContactForm locale={locale} dict={dict.contact.form} />
         </div>
       </div>
     </section>
