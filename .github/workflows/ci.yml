@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Cancela runs previos del mismo PR/branch si llega uno nuevo.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Lint · Typecheck · Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Biome — lint + format check
+        run: pnpm lint
+
+      - name: TypeScript — typecheck
+        run: pnpm typecheck
+
+      - name: Next.js — build
+        run: pnpm build
+        env:
+          # Build no necesita los secretos reales (sólo `NEXT_PUBLIC_*` se inlinea en cliente).
+          # Si en el futuro hay secrets de build, agregar aquí con `secrets.X`.
+          NEXT_TELEMETRY_DISABLED: '1'
+
+      - name: Verify bundle size
+        run: |
+          BUNDLE_SIZE=$(du -sk .next/standalone 2>/dev/null | awk '{print $1}')
+          echo "Bundle size: ${BUNDLE_SIZE} kB"
+          if [ "${BUNDLE_SIZE:-0}" -gt 102400 ]; then
+            echo "::warning::Bundle exceeded 100 MB budget (${BUNDLE_SIZE} kB)"
+          fi
