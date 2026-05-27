@@ -73,13 +73,23 @@ export async function sendContactEmail(input: ContactInput & { locale?: string }
     throw new Error('SMTP_USERNAME missing — should have been caught by getTransporter()');
   }
 
-  await transporter.sendMail({
+  // Destinatarios: lista override-able vía env var, default ambos socios.
+  // NOTA: NO incluimos `user` (vizcaia.technologies@gmail.com) como destinatario
+  // porque Gmail oculta los mensajes from==to del Inbox (solo aparecen en Sent).
+  // La copia queda automáticamente en Sent de la cuenta autenticada.
+  const recipients = process.env.CONTACT_RECIPIENTS || 'shenaorj@gmail.com, mateoc233@gmail.com';
+
+  const info = await transporter.sendMail({
     from: `Vizcaia Web Form <${user}>`,
-    to: user, // a la cuenta corporativa
-    cc: 'shenaorj@gmail.com, mateoc233@gmail.com', // ambos socios reciben copia
+    to: recipients,
     replyTo: input.email,
     subject: `[Web] ${input.name}${input.company ? ` — ${input.company}` : ''}`,
     text: formatPlainText(input),
     html: formatHtml(input),
   });
+
+  // Log explícito del messageId + accepted/rejected para diagnóstico en Coolify logs.
+  console.log(
+    `[contact] SMTP ok messageId=${info.messageId} accepted=${JSON.stringify(info.accepted)} rejected=${JSON.stringify(info.rejected)}`,
+  );
 }
