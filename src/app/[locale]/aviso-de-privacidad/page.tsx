@@ -5,10 +5,8 @@ import { notFound } from 'next/navigation';
  * Aviso de privacidad — versión español.
  * Válido solo en `/es/aviso-de-privacidad`. 404 si se accede a `/en/aviso-de-privacidad`.
  *
- * Marcado `noindex` hasta validación con abogado colombiano antes de outreach formal.
- * Cubre Ley 1581 de 2012 (Habeas Data Colombia).
- *
- * Versión inglés en `/en/privacy` (CCPA + GDPR).
+ * Marcado `noindex` hasta validación legal calificada antes de outreach formal.
+ * Traducción al español de la misma política US (CCPA + GDPR-friendly) en `/en/privacy`.
  */
 
 export const metadata: Metadata = {
@@ -33,15 +31,14 @@ export default async function AvisoPrivacidadPage({
     <article className="px-4 sm:px-6 lg:px-8 py-24 max-w-3xl mx-auto">
       <div className="mb-16">
         <p className="font-mono text-[11px] tracking-wide-18 uppercase text-paper opacity-50 mb-4">
-          Legal · Actualizado 25/05/2026
+          Legal · Actualizado 27/05/2026
         </p>
         <h1 className="font-display font-medium tracking-tight-3 text-[clamp(2.25rem,5vw,4rem)] leading-[1.05] text-balance">
           Aviso de privacidad
         </h1>
         <p className="mt-6 font-sans text-base sm:text-lg text-paper opacity-70 leading-relaxed">
           Este aviso explica cómo Vizcaia Technologies recolecta, usa y protege la información que
-          envías a través de <strong>vizcaia.com</strong>, conforme a la Ley 1581 de 2012 (Régimen
-          General de Protección de Datos) y el Decreto 1377 de 2013 de Colombia. Si algo no es
+          envías a través de <strong>vizcaia.com</strong>. Buscamos lenguaje claro; si algo no es
           claro, escríbenos a{' '}
           <a
             className="text-signal hover:text-signal-2 underline underline-offset-2"
@@ -53,10 +50,11 @@ export default async function AvisoPrivacidadPage({
         </p>
       </div>
 
-      <Section title="1. Responsable del tratamiento">
+      <Section title="1. Quiénes somos">
         <p>
-          Vizcaia Technologies, estudio de software con sede operativa en Casanare, Colombia.
-          Atendemos clientes a nivel internacional.
+          Vizcaia Technologies es un estudio de software con sede en Miami, Florida (Estados
+          Unidos). Construimos AI agents y software de producción para equipos de ingeniería y
+          operaciones, atendiendo principalmente clientes en Estados Unidos.
         </p>
         <p>
           Para preguntas sobre privacidad o ejercicio de derechos, contáctanos en{' '}
@@ -83,7 +81,7 @@ export default async function AvisoPrivacidadPage({
         </p>
       </Section>
 
-      <Section title="3. Finalidad del tratamiento">
+      <Section title="3. Por qué los recolectamos">
         <p>
           El único propósito por el cual recolectamos esta información es responder a tu consulta
           comercial.
@@ -94,7 +92,7 @@ export default async function AvisoPrivacidadPage({
         </p>
       </Section>
 
-      <Section title="4. Tiempo de conservación">
+      <Section title="4. Cuánto tiempo los conservamos">
         <p>
           Leads activos: conservamos los datos mientras dura la conversación, más 12 meses
           adicionales para referencia.
@@ -103,7 +101,7 @@ export default async function AvisoPrivacidadPage({
           Leads cerrados (declinados, no encajan): archivados 6 meses después del cierre y
           eliminados tras un máximo de 24 meses totales.
         </p>
-        <p>Puedes pedirnos eliminar tus datos antes — ver "Derechos del titular" abajo.</p>
+        <p>Puedes pedirnos eliminar tus datos antes — ver "Tus derechos" abajo.</p>
       </Section>
 
       <Section title="5. Dónde residen los datos">
@@ -113,35 +111,38 @@ export default async function AvisoPrivacidadPage({
           <li>Copia de correo entregada vía Google Workspace (Gmail SMTP)</li>
           <li>Registro de lead creado en nuestro Outline self-hosted (mismo servidor)</li>
         </ul>
-        <p>
-          Esto constituye una transferencia internacional de datos a Alemania, país con nivel
-          adecuado de protección según la SIC.
-        </p>
       </Section>
 
-      <Section title="6. Derechos del titular (Ley 1581 de 2012)">
-        <p>Como titular de los datos, tienes derecho a:</p>
+      <Section title="6. Tus derechos (CCPA + GDPR)">
+        <p>Tienes derecho a:</p>
         <ul>
           <li>
-            <strong>Conocer, actualizar y rectificar</strong> tus datos personales.
+            <strong>Acceder</strong> a los datos personales que tenemos sobre ti.
           </li>
           <li>
-            <strong>Solicitar prueba</strong> de la autorización otorgada.
+            <strong>Corregir</strong> información inexacta.
           </li>
           <li>
-            <strong>Ser informado</strong> sobre el uso que se le ha dado a tus datos.
+            <strong>Eliminar</strong> tus datos ("derecho al olvido").
           </li>
           <li>
-            <strong>Presentar quejas</strong> ante la Superintendencia de Industria y Comercio (SIC)
-            por infracciones a la ley.
+            <strong>Oponerte o restringir</strong> el tratamiento.
           </li>
           <li>
-            <strong>Revocar la autorización</strong> y/o solicitar la supresión del dato.
+            <strong>Recibir una copia</strong> de tus datos en formato legible por máquina
+            (portabilidad).
           </li>
           <li>
-            <strong>Acceder gratuitamente</strong> a tus datos que hayan sido objeto de tratamiento.
+            <strong>Presentar una queja</strong> ante una autoridad supervisora (tu autoridad local
+            de protección de datos en la UE, el Fiscal General de California para residentes de
+            California).
           </li>
         </ul>
+        <p>
+          No venderemos, alquilaremos ni compartiremos tu información personal con terceros para sus
+          propósitos de marketing. No usamos tus datos para "publicidad comportamental
+          cross-context" según la define CPRA.
+        </p>
       </Section>
 
       <Section title="7. Cómo ejercer tus derechos">
@@ -150,8 +151,7 @@ export default async function AvisoPrivacidadPage({
           <a className="text-signal" href="mailto:privacidad@vizcaia.com">
             privacidad@vizcaia.com
           </a>{' '}
-          desde el correo que usaste en el formulario. Respondemos dentro de los 15 días hábiles
-          establecidos por la ley.
+          desde la dirección que usaste en el formulario. Respondemos dentro de 30 días.
         </p>
         <p>
           No cobramos por solicitudes razonables. Si una petición es excesiva o repetitiva, podemos
@@ -189,7 +189,7 @@ export default async function AvisoPrivacidadPage({
       <Section title="11. Contacto">
         <p>
           Vizcaia Technologies <br />
-          Casanare, Colombia <br />
+          Miami, FL · Estados Unidos <br />
           <a className="text-signal" href="mailto:privacidad@vizcaia.com">
             privacidad@vizcaia.com
           </a>

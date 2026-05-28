@@ -5,10 +5,10 @@ import { notFound } from 'next/navigation';
  * Privacy policy — English version.
  * Valid only at `/en/privacy`. Returns 404 if accessed at `/es/privacy`.
  *
- * Marked `noindex` until validated by USA counsel before formal outreach.
+ * Marked `noindex` until validated by US counsel before formal outreach.
  * Template covers CCPA (California) + GDPR-friendly language (EU visitors).
  *
- * Spanish equivalent at `/es/aviso-de-privacidad` (Habeas Data Colombia).
+ * Spanish translation of the same US-jurisdiction policy at `/es/aviso-de-privacidad`.
  */
 
 export const metadata: Metadata = {
@@ -49,8 +49,9 @@ export default async function PrivacyPage({ params }: { params: Promise<{ locale
 
       <Section title="1. Who we are">
         <p>
-          Vizcaia Technologies is a software studio headquartered in Casanare, Colombia. We operate
-          internationally and serve clients primarily in the United States.
+          Vizcaia Technologies is a software studio headquartered in Miami, Florida (United States).
+          We build AI agents and production software for engineering and operations teams, primarily
+          serving clients in the US.
         </p>
         <p>
           For privacy questions or data requests, contact us at{' '}
@@ -180,7 +181,7 @@ export default async function PrivacyPage({ params }: { params: Promise<{ locale
       <Section title="11. Contact">
         <p>
           Vizcaia Technologies <br />
-          Casanare, Colombia <br />
+          Miami, FL · United States <br />
           <a className="text-signal" href="mailto:privacy@vizcaia.com">
             privacy@vizcaia.com
           </a>

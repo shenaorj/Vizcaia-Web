@@ -1,11 +1,11 @@
 {
   "meta": {
     "title": "Vizcaia — A foundry for intelligence",
-    "description": "Construimos AI agents y automatizaciones para empresas medianas. Producción real, no demos."
+    "description": "Construimos AI agents y software de producción para equipos de ingeniería y operaciones. Sistemas que llegan a producción, no pilotos que se estancan."
   },
   "hero": {
     "tagline": "A foundry for intelligence",
-    "subtitle": "Construimos AI agents y automatizaciones que llegan a producción. No demos.",
+    "subtitle": "Construimos AI agents y software de producción para equipos de ingeniería y operaciones. Sistemas que corren en vivo, no pilotos atrapados en PowerPoint.",
     "cta": "Hablemos"
   },
   "common": {
@@ -22,15 +22,15 @@
     "privacy": "Aviso de privacidad",
     "contactLabel": "Contacto",
     "copyright": "© 2026 Vizcaia Technologies",
-    "location": "Sede en Casanare, Colombia · Servicio global"
+    "location": "Miami, FL · Estados Unidos"
   },
   "manifesto": {
     "eyebrow": "Manifiesto",
     "title": "Construimos la fundición, no solo las herramientas.",
     "paragraphs": [
-      "Vizcaia construye AI agents y automatizaciones para empresas. No somos una consultoría que entrega un deck — entregamos sistemas que corren en producción.",
+      "Vizcaia construye AI agents y software de producción para equipos de ingeniería y operaciones. No somos una consultoría que entrega un deck — entregamos sistemas que corren en vivo, todos los días.",
       "El nombre viene de la costa de hierro del norte de España — una región que convirtió mineral crudo en estructuras del mundo moderno. Hacemos lo mismo con señal cruda: la señal se vuelve inteligencia estructurada; la inteligencia estructurada se vuelve trabajo; el trabajo se vuelve apalancamiento.",
-      "Nuestros clientes no compran software. Compran la diferencia entre lo que era posible ayer y lo que se vuelve inevitable mañana."
+      "Nuestros clientes no compran software. Compran la diferencia entre lo que su equipo puede hacer hoy y lo que se vuelve inevitable el próximo trimestre."
     ]
   },
   "services": {
@@ -39,20 +39,20 @@
     "items": [
       {
         "number": "01",
-        "title": "Apps con AI integrada",
-        "lead": "Apps de producción con AI embebida — agentes, chatbots, automatizaciones internas.",
-        "body": "De spec a deployment. Entregamos sistemas que corren frente a usuarios reales. No demos."
+        "title": "AI agents en producción",
+        "lead": "Agentes y asistentes basados en LLM embebidos en workflows reales — no demos.",
+        "body": "Retrieval custom, uso de herramientas, harness de evaluación, observabilidad. Entregamos la versión que tu equipo usa todos los días, con los guardrails para que sea confiable."
       },
       {
         "number": "02",
-        "title": "Sistemas operativos verticales",
-        "lead": "Sistemas operativos por industria — el patrón Quitebe, llevado a tu dominio.",
-        "body": "Backend + móvil + admin + BI, diseñados alrededor de cómo tu operación funciona en el terreno."
+        "title": "Sistemas operativos internos",
+        "lead": "Backend, móvil, admin y BI entregados como un stack único coherente.",
+        "body": "Diseñado alrededor de cómo tu equipo realmente opera. Reemplaza el stack de spreadsheets y Slack con software en el que ingenieros y operadores confían."
       },
       {
         "number": "03",
-        "title": "Consultoría de arquitectura AI",
-        "lead": "Segunda opinión para equipos que ya tienen AI en producción pero dudan de su stack.",
+        "title": "Revisión de arquitectura AI",
+        "lead": "Segunda opinión para equipos con AI ya en producción pero dudas sobre el stack.",
         "body": "Evaluación técnica honesta, recomendaciones concretas, implementación opcional si quieres que lo corramos."
       }
     ]
@@ -86,9 +86,9 @@
   "work": {
     "eyebrow": "Trabajo previo",
     "title": "Construido en producción.",
-    "lead": "Sistema de operaciones agrícolas a escala de producción cubriendo más de 1.000 hectáreas de palma de aceite. Backend, móvil, admin, dashboards BI — reemplazó un stack legacy de spreadsheets y hoy corre el día a día para cuadrillas de campo y supervisores.",
+    "lead": "Sistema operativo de producción atendiendo cientos de usuarios diarios en una organización distribuida: backend, móvil nativo, consola admin y dashboards BI como un stack único. Reemplazó un workflow legacy de spreadsheets y hoy corre la operación día a día de punta a punta.",
     "tags": ["Backend", "Móvil", "BI"],
-    "footnote": "Nombre del cliente bajo reserva. Referencias disponibles a petición."
+    "footnote": "Nombre del cliente e industria bajo NDA. Referencias disponibles a petición."
   },
   "contact": {
     "eyebrow": "Contacto",

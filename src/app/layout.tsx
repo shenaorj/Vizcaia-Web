@@ -63,13 +63,14 @@ const organizationSchema = {
   url: SITE_URL,
   logo: `${SITE_URL}/icon`,
   description:
-    'Software studio building AI agents and automations for US mid-market companies. Production-grade, not demos.',
+    'Software studio building AI agents and production software for engineering and operations teams. Systems that ship, not pilots that stall.',
   slogan: 'A foundry for intelligence',
   foundingDate: '2026-05',
   address: {
     '@type': 'PostalAddress',
-    addressLocality: 'Casanare',
-    addressCountry: 'CO',
+    addressLocality: 'Miami',
+    addressRegion: 'FL',
+    addressCountry: 'US',
   },
   contactPoint: {
     '@type': 'ContactPoint',

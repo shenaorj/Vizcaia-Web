@@ -1,11 +1,11 @@
 {
   "meta": {
     "title": "Vizcaia — A foundry for intelligence",
-    "description": "We build AI agents and automations for US mid-market companies. Production-grade, not demos."
+    "description": "We build AI agents and production software for engineering and operations teams. Systems that ship, not pilots that stall."
   },
   "hero": {
     "tagline": "A foundry for intelligence",
-    "subtitle": "We build AI agents and automations that go to production. Not demos.",
+    "subtitle": "We build AI agents and production software for engineering and operations teams. Systems running live, not pilots stuck in PowerPoint.",
     "cta": "Let's talk"
   },
   "common": {
@@ -22,15 +22,15 @@
     "privacy": "Privacy policy",
     "contactLabel": "Contact",
     "copyright": "© 2026 Vizcaia Technologies",
-    "location": "Headquartered in Casanare, Colombia · Serving global"
+    "location": "Miami, FL · United States"
   },
   "manifesto": {
     "eyebrow": "Manifesto",
     "title": "We build the foundry, not just the tools.",
     "paragraphs": [
-      "Vizcaia builds AI agents and automations for enterprise. We are not a consultancy that hands over a deck — we ship systems that run in production.",
+      "Vizcaia builds AI agents and production software for engineering and operations teams. We are not a consultancy that hands over a deck — we ship systems that run live, every day.",
       "The name comes from the iron coast of northern Spain — a region that turned raw ore into the structures of the modern world. We do the same with raw signal: signal becomes structured intelligence; structured intelligence becomes labor; labor becomes leverage.",
-      "Our customers don't buy software. They buy the difference between what was possible yesterday and what becomes inevitable tomorrow."
+      "Our customers don't buy software. They buy the difference between what their team can do today and what becomes inevitable next quarter."
     ]
   },
   "services": {
@@ -39,20 +39,20 @@
     "items": [
       {
         "number": "01",
-        "title": "AI-integrated apps",
-        "lead": "Production-ready apps with AI embedded — agents, chatbots, internal automations.",
-        "body": "From spec to deployment. We ship systems that actually run in front of real users. Not demos."
+        "title": "AI agents in production",
+        "lead": "LLM-powered agents and assistants embedded in real workflows — not demos.",
+        "body": "Custom retrieval, tool use, evaluation harness, observability. We ship the version your team uses every day, with the guardrails to keep it trustworthy."
       },
       {
         "number": "02",
-        "title": "Vertical operating systems",
-        "lead": "Industry-specific operating systems — the Quitebe pattern, transplanted to your domain.",
-        "body": "Backend + mobile + admin + BI, designed around how your operation actually works on the ground."
+        "title": "Internal operating systems",
+        "lead": "Backend, mobile, admin and BI delivered as a single coherent stack.",
+        "body": "Designed around how your team actually operates. Replaces the spreadsheet-and-Slack stack with software engineers and operators trust."
       },
       {
         "number": "03",
-        "title": "AI architecture consulting",
-        "lead": "Second opinion for teams that already have AI in production but doubt their stack.",
+        "title": "AI architecture review",
+        "lead": "Second opinion for teams with AI already in production but doubts about the stack.",
         "body": "Honest technical assessment, concrete recommendations, optional implementation if you want us to run it."
       }
     ]
@@ -86,9 +86,9 @@
   "work": {
     "eyebrow": "Past work",
     "title": "Built in production.",
-    "lead": "Production-scale agricultural operations system covering 1,000+ hectares of palm oil estate. Backend, mobile, admin, BI dashboards — replaced a legacy spreadsheet stack and now runs the day-to-day for field crews and supervisors.",
+    "lead": "Production operating system serving hundreds of daily users across a distributed organization: backend, native mobile, admin console and BI dashboards as one stack. Replaced a legacy spreadsheet workflow and now runs the day-to-day operation end-to-end.",
     "tags": ["Backend", "Mobile", "BI"],
-    "footnote": "Client name withheld by request. References available on request."
+    "footnote": "Client name and industry under NDA. References available on request."
   },
   "contact": {
     "eyebrow": "Contact",
