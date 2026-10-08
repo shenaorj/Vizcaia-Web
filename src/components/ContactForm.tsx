@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { CONTACT_EMAIL } from '@/lib/contact';
 import type { Dictionary } from '@/lib/dictionaries';
 import type { Locale } from '@/lib/i18n';
 import { type ContactInput, ContactSchema } from '@/lib/schemas';
@@ -243,12 +244,12 @@ export function ContactForm({ locale, dict }: { locale: Locale; dict: FormDict }
               {state.reason === 'rateLimited' ? dict.errors.rateLimited : dict.errorBody}{' '}
               {state.reason === 'server' && (
                 <ButtonLink
-                  href="mailto:hello@vizcaia.com?subject=Project%20inquiry"
+                  href={`mailto:${CONTACT_EMAIL}?subject=Project%20inquiry`}
                   variant="ghost"
                   size="sm"
                   className="!inline-flex !h-auto !px-0 !text-xs"
                 >
-                  hello@vizcaia.com
+                  {CONTACT_EMAIL}
                 </ButtonLink>
               )}
             </p>
