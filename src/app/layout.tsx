@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono, Instrument_Serif, Space_Grotesk } from 'next/font/google';
 import { CloudflareAnalytics } from '@/components/CloudflareAnalytics';
+import { CONTACT_EMAIL, CONTACT_PHONE_E164 } from '@/lib/contact';
 import './globals.css';
 
 /**
@@ -75,7 +76,8 @@ const organizationSchema = {
   contactPoint: {
     '@type': 'ContactPoint',
     contactType: 'sales',
-    email: 'hello@vizcaia.com',
+    email: CONTACT_EMAIL,
+    telephone: CONTACT_PHONE_E164,
     availableLanguage: ['en', 'es'],
   },
 };

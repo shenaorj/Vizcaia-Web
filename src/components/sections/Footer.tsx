@@ -1,5 +1,6 @@
 import type { Route } from 'next';
 import Link from 'next/link';
+import { CONTACT_EMAIL, CONTACT_PHONE, CONTACT_PHONE_E164 } from '@/lib/contact';
 import type { Dictionary } from '@/lib/dictionaries';
 import type { Locale } from '@/lib/i18n';
 import { MarkSpark } from '../MarkSpark';
@@ -9,8 +10,7 @@ import { MarkSpark } from '../MarkSpark';
  * 3 columnas en desktop, stack en mobile.
  * Privacy link cambia slug según locale (`/en/privacy` vs `/es/aviso-de-privacidad`).
  *
- * El email `hello@vizcaia.com` es placeholder — cuando configuremos Google Workspace
- * (ver "Decisiones importantes" en Outline), reemplazar.
+ * Email y teléfono vienen de `@/lib/contact` (única fuente).
  */
 export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
   const privacyPath = (locale === 'en' ? '/en/privacy' : '/es/aviso-de-privacidad') as Route;
@@ -59,10 +59,18 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
             <ul className="space-y-2 font-sans text-sm">
               <li>
                 <a
-                  href="mailto:hello@vizcaia.com"
+                  href={`mailto:${CONTACT_EMAIL}`}
+                  className="break-all hover:text-signal transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal"
+                >
+                  {CONTACT_EMAIL}
+                </a>
+              </li>
+              <li>
+                <a
+                  href={`tel:${CONTACT_PHONE_E164}`}
                   className="hover:text-signal transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal"
                 >
-                  hello@vizcaia.com
+                  {CONTACT_PHONE}
                 </a>
               </li>
             </ul>
